@@ -1,0 +1,3 @@
+# view AndroidManifest.xml #generated:6
+-keep class mobile.budget.planner.BudgetPlanner { <init>(...); }
+
