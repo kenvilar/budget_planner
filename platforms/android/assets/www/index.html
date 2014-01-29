@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Hello World</title>
-    </head>
-    
-    <body>
-    
-    <!--
+<head>
+<meta charset="utf-8" />
+<meta name="format-detection" content="telephone=no" />
+<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+<!--<link rel="stylesheet" type="text/css" href="css/index.css" />-->
+<link rel="stylesheet" type="text/css" href="css/jquery.mobile.min.css" />
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.mobile.min.js"></script>
+<title>Budget Planner</title>
+</head>
+
+<body>
+	<div data-role="page" class="type-home" data-icon="loading"
+		style="background-image: url('images/background.png'); background-attachment: fixed; background-repeat: repeat-y; background-size: 100% 100%;">
+		<div data-role="content" id="btnLoad">
+			<br> <br>
+			<center>
+				<img src="images/logo.png" height="130px" width="275px">
+			</center>
+			<br>
+			<div class="content-primary">
+				<ul data-role="listview" data-inset="true" data-theme="a">
+					<li><a href="index.html">Create New Budget</a></li>
+					<li><a href="index.html">Edit Budget</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!--
         <div class="app">
             <h1>Apache Cordova</h1>
             <div id="deviceready" class="blink">
@@ -26,7 +46,7 @@
             app.initialize();
         </script>
      -->
-     
-     <h1>Hello world!</h1>
-    </body>
+
+	<!--<h1>Hello world!</h1>-->
+</body>
 </html>
