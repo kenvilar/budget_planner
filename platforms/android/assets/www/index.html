@@ -8,9 +8,10 @@
 <meta name="viewport"
 	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 <!--<link rel="stylesheet" type="text/css" href="css/index.css" />-->
-<link rel="stylesheet" type="text/css" href="css/jquery.mobile.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="css/jquery.mobile-1.4.0.min.css" />
 <script src="js/jquery.min.js"></script>
-<script src="js/jquery.mobile.min.js"></script>
+<script src="js/jquery.mobile-1.4.0.min.js"></script>
 <title>Budget Planner</title>
 </head>
 
@@ -24,8 +25,25 @@
 			</center>
 			<br>
 			<div class="content-primary">
-				<ul data-role="listview" data-inset="true" data-theme="a">
-					<li><a href="index.html">Create New Budget</a></li>
+				<ul data-role="listview" data-inset="true" data-theme="b">
+					<li><a href="#popupcreatenewbudget" data-rel="popup"
+						data-position-to="window" data-transition="pop" data-theme="a">Create
+							New Budget</a></li>
+					<div data-role="popup" id="popupcreatenewbudget" data-theme="a"
+						class="ui-corner-all">
+						<form>
+							<div style="padding: 10px 20px;">
+								<h3>Please input your new budget</h3>
+								<label for="un" class="ui-hidden-accessible">New Budget:</label>
+								<input type="text" name="createBudget" id="cb" value=""
+									placeholder="" data-theme="a">
+								<button type="submit"
+									class="ui-btn ui-corner-all ui-shadow ui-btn-b">Submit</button>
+								<button type="submit"
+									class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back">Cancel</button>
+							</div>
+						</form>
+					</div>
 					<li><a href="index.html">Edit Budget</a></li>
 				</ul>
 			</div>
