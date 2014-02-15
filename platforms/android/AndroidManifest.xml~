@@ -13,6 +13,7 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name" >
         <activity
+			android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:name="BudgetPlanner"
             android:label="Budget Planner Homepage" >
 >>>>>>> 7fa2a1847d621a2ce9c3dee2b1c4e6c3664f89b1
@@ -27,7 +28,7 @@
         </activity>
         <activity
             android:name="EditBudget"
-            android:label="Edit Details" >
+            android:label="Edit Information" >
         </activity>
     </application>
     <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="17" />

@@ -19,19 +19,85 @@
 
 package mobile.budget.planner;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import org.apache.cordova.*;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
-public class BudgetPlanner extends CordovaActivity 
-{
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        // super.init();
-        // Set by <content src="index.html" /> in config.xml
-        //super.loadUrl(Config.getStartUrl());
-        super.loadUrl("file:///android_asset/www/index.html");
-    }
+import mobile.budget.db.DatabaseLayer;
+import mobile.budget.model.BudgetModel;
+
+import org.apache.cordova.CordovaActivity;
+
+public class BudgetPlanner extends CordovaActivity {
+	EditText description, amount;
+	Button save, show;
+	DatabaseLayer dbLayer = null;
+	String saveAlertMessage = null;
+	Intent showBudget;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// super.init();
+		// Set by <content src="index.html" /> in config.xml
+		// super.loadUrl(Config.getStartUrl());
+		// super.loadUrl("file:///android_asset/www/index.html");
+		setContentView(R.layout.activity_main);
+		dbLayer = new DatabaseLayer(this);
+		showBudget = new Intent(this, ShowBudget.class);
+		description = (EditText) findViewById(R.id.description);
+		amount = (EditText) findViewById(R.id.amount);
+		save = (Button) findViewById(R.id.btnSave);
+		show = (Button) findViewById(R.id.btnShow);
+		save.setOnClickListener(onSave);
+		show.setOnClickListener(onShow);
+	}
+
+	private View.OnClickListener onShow = new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			startActivity(showBudget);
+		}
+	};
+
+	private View.OnClickListener onSave = new View.OnClickListener() {
+		@Override
+		public void onClick(View arg0) {
+			try {
+				String bDescription;
+				long bAmount; 
+				bDescription = description.getText().toString();
+				bAmount = Long.parseLong(amount.getText().toString());
+				BudgetModel budgetModel = new BudgetModel();
+				budgetModel.setDescription(bDescription);
+				budgetModel.setAmount(bAmount);
+				dbLayer.open();
+				boolean flag = dbLayer.saveBudget(budgetModel);
+				if (flag == true) {
+					saveAlertMessage = "Added SuccessFully";
+					alertMessage(saveAlertMessage);
+				} else {
+					saveAlertMessage = "The Budget you entered is already exist!";
+					alertMessage(saveAlertMessage);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				alertMessage("Please fill in the form");
+			} finally {
+				dbLayer.close();
+			}
+		}
+	};
+
+	public void alertMessage(String dialMsg) {
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+		alertBuilder.setTitle("Add Budget");
+		alertBuilder.setMessage(dialMsg);
+		alertBuilder.setCancelable(false);
+		alertBuilder.setPositiveButton("Ok", null);
+		alertBuilder.show();
+	}
 }
-
