@@ -1,73 +1,32 @@
 <!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
-<head>
-<meta charset="utf-8" />
-<meta name="format-detection" content="telephone=no" />
-<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-<meta name="viewport"
-	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-<!--<link rel="stylesheet" type="text/css" href="css/index.css" />-->
-<link rel="stylesheet" type="text/css"
-	href="css/jquery.mobile-1.4.0.min.css" />
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.mobile-1.4.0.min.js"></script>
-<title>Budget Planner</title>
-</head>
-
-<body>
-	<div data-role="page" class="type-home" data-icon="loading"
-		style="background-image: url('images/background.png'); background-attachment: fixed; background-repeat: repeat-y; background-size: 100% 100%;">
-		<div data-role="content" id="btnLoad">
-			<br> <br>
-			<center>
-				<img src="images/logo.png" height="130px" width="275px">
-			</center>
-			<br>
-			<div class="content-primary">
-				<ul data-role="listview" data-inset="true" data-theme="b">
-					<li><a href="#popupcreatenewbudget" data-rel="popup"
-						data-position-to="window" data-transition="pop" data-theme="a">Create
-							New Budget</a></li>
-					<div data-role="popup" id="popupcreatenewbudget" data-theme="a"
-						class="ui-corner-all">
-						<form>
-							<div style="padding: 10px 20px;">
-								<h3>Please input your new budget</h3>
-								<label for="un" class="ui-hidden-accessible">New Budget:</label>
-								<input type="text" name="createBudget" id="cb" value=""
-									placeholder="" data-theme="a">
-								<button type="submit"
-									class="ui-btn ui-corner-all ui-shadow ui-btn-b">Submit</button>
-								<button type="submit"
-									class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back">Cancel</button>
-							</div>
-						</form>
-					</div>
-					<li><a href="#popupeditbudget" data-rel="popup"
-						data-position-to="window" data-transition="pop" data-theme="a">Edit
-							Budget</a></li>
-					<div data-role="popup" id="popupeditbudget" data-theme="a"
-						class="ui-corner-all">
-						<form>
-							<div style="padding: 10px 20px;">
-								<h3>Update your budget</h3>
-								<label for="nu" class="ui-hidden-accessible">New Budget:</label>
-								<input type="text" name="editBudget" id="eb" value=""
-									placeholder="" data-theme="a">
-								<button type="submit"
-									class="ui-btn ui-corner-all ui-shadow ui-btn-b">Update</button>
-								<button type="submit"
-									class="ui-btn ui-corner-all ui-shadow ui-btn-b" data-rel="back">Cancel</button>
-							</div>
-						</form>
-					</div>
-				</ul>
-			</div>
-		</div>
-	</div>
-
-	<!--
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Hello World</title>
+    </head>
+    <body>
         <div class="app">
             <h1>Apache Cordova</h1>
             <div id="deviceready" class="blink">
@@ -80,8 +39,5 @@
         <script type="text/javascript">
             app.initialize();
         </script>
-     -->
-
-	<!--<h1>Hello world!</h1>-->
-</body>
+    </body>
 </html>
