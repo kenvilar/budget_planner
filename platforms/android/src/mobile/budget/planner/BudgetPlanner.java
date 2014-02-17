@@ -21,6 +21,7 @@ package mobile.budget.planner;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,8 +45,8 @@ public class BudgetPlanner extends CordovaActivity {
 		// super.init();
 		// Set by <content src="index.html" /> in config.xml
 		// super.loadUrl(Config.getStartUrl());
-		// super.loadUrl("file:///android_asset/www/index.html");
-		setContentView(R.layout.activity_main);
+		super.loadUrl("file:///android_asset/www/index.html");
+		/*setContentView(R.layout.activity_main);
 		dbLayer = new DatabaseLayer(this);
 		showBudget = new Intent(this, ShowBudget.class);
 		description = (EditText) findViewById(R.id.description);
@@ -54,6 +55,8 @@ public class BudgetPlanner extends CordovaActivity {
 		show = (Button) findViewById(R.id.btnShow);
 		save.setOnClickListener(onSave);
 		show.setOnClickListener(onShow);
+		*/
+		
 	}
 
 	private View.OnClickListener onShow = new View.OnClickListener() {
