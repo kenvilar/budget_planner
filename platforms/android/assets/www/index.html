@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.css">
 		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			
 			var db;
@@ -50,6 +50,8 @@
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,successCallBack);
 			
  				ListDBValues();
+ 				GetName();
+ 				GetTarget()
 			}
 
 			function ListDBValues() {
@@ -66,7 +68,7 @@
       					if (result != null && result.rows != null) {
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' ' + row.Target);
+          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' : ' + row.Target);
         						}
       						}
      					},errorHandler);
@@ -74,23 +76,76 @@
  
  					return;
  
-				}
- 
-			function AddValueToDB() {
- 				if (!window.openDatabase) {
-   					alert('Databases are not supported in this browser.');
-   					return;
- 				}
- 
- 				db.transaction(function(transaction) {
-   				transaction.executeSql('INSERT INTO BudgetDB(Name, Target) VALUES (?,?)',[$('#txName').val(), $('#txTarget').val()], nullHandler,errorHandler);});
- 
- 				ListDBValues();
- 				return false;
+				
 			}
 
+			function AddValueToDB() {
+				if (!window.openDatabase) {
+					alert('Databases are not supported in this browser.');
+					return;
+				}
+
+				db.transaction(function(transaction) {
+					transaction.executeSql(
+							'INSERT INTO BudgetDB(Name, Target) VALUES (?,?)',
+							[ $('#txName').val(), $('#txTarget').val() ],
+							nullHandler, errorHandler);
+				});
+
+				ListDBValues();
+				return false;
+			}
 			
-		
+			function GetName() {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				$('#MyName').html('');
+ 
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM BudgetDB;', [],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          						$('#MyName').append(row.Name);
+        						}
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+ 
+				
+			}
+			
+			function GetTarget() {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				$('#MyTarget').html('');
+ 
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM BudgetDB;', [],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          						$('#MyTarget').append(row.Target);
+        						}
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+ 
+				
+			}
+
 		</script>
 
 
@@ -98,17 +153,22 @@
     </head>
 	
     <body onload="onBodyLoad()">
+    
    		<div data-role="page" id="mainpage">
+   		
 			<div data-role="header">
     			<h1>Home</h1>
   			</div>
 
 			<div data-role="content">
   				<a href="#addBudget" data-role="button">Add Budget</a>
+  				<div data-role="collapsible" data-theme="b" data-content-theme="b">
+					<h2>View Budget List</h2>
+					    <ul data-role="listview" data-filter="true">
+					        <li><a href="#editBudget" id="Budgets"></a></li>
+					    </ul>
+				</div>
   			</div>
-			<div data-role="content">
-				<ul id="Budgets"></ul>
-			</div>
 		</div>
 		
 		<div data-role="page" id="addBudget">
@@ -120,6 +180,24 @@
 				<input type="text" placeholder="Budget name" id="txName">
 				<input type="text" placeholder="Target" id="txTarget">
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
+				<br>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+				
+			</div>
+		</div>
+		
+		<div data-role="page" id="editBudget">
+			<div data-role="header">
+				<h1>Edit Budget</h1>
+			</div>
+			<div data-role="content">
+				<b>Budget Name: <b id="MyName"></b></b><br>
+				<b>Target: <b id="MyTarget"></b></b>
+				<br>
+				<button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-edit ui-btn-b">Edit Budget</button>
+				<button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b">Delete Budget</button>
+				<br>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 				
 			</div>
 		</div>
