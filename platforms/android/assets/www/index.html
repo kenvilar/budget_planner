@@ -50,7 +50,7 @@
 			
  				ListDBValues();
  				GetName();
- 				GetTarget()
+ 				GetTarget();
 			}
 
 			function ListDBValues() {
@@ -67,7 +67,7 @@
       					if (result != null && result.rows != null) {
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' : ' + row.Target);
+          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Target);
         						}
       						}
      					},errorHandler);
@@ -92,6 +92,8 @@
 				});
 
 				ListDBValues();
+				GetName();
+				GetTarget();
 				return false;
 			}
 			
@@ -145,6 +147,24 @@
 				
 			}
 			
+			function DeleteBudget() {
+				if (!window.openDatabase) {
+					alert('Databases are not supported in this browser.');
+					return;
+				}
+
+				confirm("Are you sure you want to delete?")
+				db.transaction(function(transaction) {
+					transaction.executeSql(
+							'DELETE FROM BudgetDB;',
+							[],
+							nullHandler, errorHandler);
+				});
+
+				ListDBValues();
+				return false;
+			}
+			
 		</script>
 
 
@@ -153,7 +173,7 @@
 	
     <body onload="onBodyLoad()">
     
-   		<div data-role="page" id="mainpage">
+   		<div data-role="page" id="mainpage" onload="onBodyLoad()">
    		
 			<div data-role="header">
     			<h1>Home</h1>
@@ -163,14 +183,14 @@
   				<a href="#addBudget" data-role="button">Add Budget</a>
   				<div data-role="collapsible" data-theme="b" data-content-theme="b">
 					<h2>View Budget List</h2>
-					    <ul data-role="listview" data-filter="true">
+					    <ul data-role="listview"">
 					        <li><a href="#editBudget" id="Budgets"></a></li>
 					    </ul>
 				</div>
   			</div>
 		</div>
 		
-		<div data-role="page" id="addBudget">
+		<div data-role="page" id="addBudget" >
 			<div data-role="header">
 				<h1>Add Budget</h1>
 			</div>
@@ -185,16 +205,16 @@
 			</div>
 		</div>
 		
-		<div data-role="page" id="editBudget">
+		<div data-role="page" id="editBudget" onload="onBodyLoad()">
 			<div data-role="header">
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content">
-				<b>Budget Name: <b id="MyName"></b></b><br>
-				<b>Target: <b id="MyTarget"></b></b>
+				<b>Budget Name: <small id="MyName"></small></b><br>
+				<b>Target: <small id="MyTarget"></small></b>
 				<br>
 				<button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-edit ui-btn-b">Edit Budget</button>
-				<button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b">Delete Budget</button>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 				
