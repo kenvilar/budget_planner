@@ -160,8 +160,29 @@
 							[],
 							nullHandler, errorHandler);
 				});
-
+				
 				ListDBValues();
+				GetName();
+				GetTarget();
+				return false;
+			}
+			
+			function updateBudget(){
+				db.transaction(
+				    function (transaction) {
+				    	if( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
+				    		var bdgtnm = $('#bdgtnm').val();
+				    		var trgt = $('#trgt').val();
+				    	} else {
+				    		var bdgtnm = 'none';
+				    		var trgt = 'none';
+				    	}
+				    	transaction.executeSql("UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = 1", [bdgtnm, trgt]);
+				    }
+				);
+				ListDBValues();
+				GetName();
+				GetTarget();
 				return false;
 			}
 			
@@ -213,7 +234,19 @@
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Target: <small id="MyTarget"></small></b>
 				<br>
-				<button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-edit ui-btn-b">Edit Budget</button>
+				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
+				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
+				    <form>
+				        <div style="padding:10px 20px;">
+				            <h3>Edit your budget</h3>
+				            <label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
+				            <input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
+				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
+				            <input type="number" name="budget_target" pattern="[0-9]*" id="trgt" value="" data-theme="a" placeholder="target">
+				            <a href="editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
+				        </div>
+				    </form>
+				</div><!-- popup -->
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
