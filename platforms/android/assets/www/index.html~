@@ -11,26 +11,26 @@
         <!-- <link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1.min.css">
 		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" src="jquery-2.1.0.min.js"></script> -->
-		
+
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.css">
 		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">	
-		
+
 			$(document).ready(function () {
 				$('#txMoney').keyup(function () {
 					$('#txTarget').val($('#txMoney').val()/2);
 					$('#txTarget').attr('max',$('#txMoney').val());
 				});
 			});
-		
+
 			var db;
 			var shortName = 'BudgetDB';
 			var version = '1.0';
 			var displayName = 'BudgetDB';
 			var maxSize = 200;
-	
+
 			function errorHandler(transaction, error) {
    				alert('Error: ' + error.message + ' code: ' + error.code);
 				}
@@ -55,9 +55,13 @@
   				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
 
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date DATE NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
-			
+				db.transaction(function(tx){
+
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date DATE NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+				
+
  				ListDBValues();
  				GetName();
  				GetTarget();
@@ -79,7 +83,7 @@
       						html = html + '<ul data-role="listview">';
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          						/* $('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Money + ' , ' + row.Target); */
+          					
     					        html += '<li>';
     					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
@@ -92,19 +96,19 @@
  
  					return;
  
-				
+
 			}
-			
-			
+
+
 
 			function clearAddBudgetField() {
 				$('#txTarget').val('');
 				$('#txName').val('');
 				$('#txMoney').val('');
-				
+
 				return;
 			}
-			
+
 			function AddValueToDB() {
 				if (!window.openDatabase) {
 					alert('Databases are not supported in this browser.');
@@ -113,8 +117,8 @@
 
 				db.transaction(function(transaction) {
 					transaction.executeSql(
-							'INSERT INTO BudgetDB(Name, Money, Target) VALUES (?,?,?)',
-							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val() ],
+							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
+							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()],
 							nullHandler, errorHandler);
 				});
 
@@ -123,8 +127,24 @@
 				GetTarget();
 				return false;
 			}
+
+
+			function AddExpense() {
+				if (!window.openDatabase) {
+					alert('Databases are not supported in this browser.');
+					return;
+				}
+
+				db.transaction(function(transaction) {
+					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
+				});
+
+								
+				return false;
+			}
 			
 			function GetName(id) {
+				$('#currentBudgetID').val(id);
  				if (!window.openDatabase) {
   					alert('Databases are not supported in this browser.');
   				return;
@@ -150,11 +170,9 @@
  
  					return;
  
-				
+
 			}
-			
-			
-			
+
 			function DeleteBudget() {
 				var id = $('#Myid').val();
 				if (!window.openDatabase) {
@@ -169,13 +187,13 @@
 							[id],
 							nullHandler, errorHandler);
 				});
-				
+
 				ListDBValues();
 				GetName();
 				GetTarget();
 				return false;
 			}
-			
+
 			function updateBudget(){
 				var id = $('#Myid').val();
 				db.transaction(
@@ -203,7 +221,7 @@
 
         <title>Budget Planner</title>
     </head>
-	
+
     <body onload="onBodyLoad()">
     
    		<div data-role="page" id="mainpage" onload="onBodyLoad()">
@@ -216,12 +234,13 @@
   				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b">
 					<h2>View Budget List</h2>
+						<input type="hidden" id="currentBudgetID">
 						<div id="Budgets"></div>
 					
 				</div>
   			</div>
 		</div>
-		
+
 		<div data-role="page" id="addBudget" >
 			<div data-role="header">
 				<h1>Add Budget</h1>
@@ -232,9 +251,45 @@
 				<input type="text" placeholder="Income" id="txMoney">
 				<label for="Target">Target Savings:</label>
 				<input type="range" id="txTarget" min="0">
-
+				<script>
+					document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
+				</script>
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
 				<br>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+
+			</div>
+		</div>
+
+		<div data-role="page" id="addExpensePage" >
+			<div data-role="header">
+				<h1>Add Expense</h1>
+			</div>
+			<div data-role="content">
+				<p>This is where you will add a new expense</p>
+				<fieldset class="ui-field-contain">
+    					<label for="category">Select Category</label>
+    					<select name="category" id="txCategory">
+      						<option value="Food">Food / Beverages</option>
+      						<option value="Transportation">Transportation</option>
+      						<option value="Education">Education</option>
+						<option value="Clothing">Clothing</option>
+						<option value="Personal">Personal</option>
+						<option value="Home">Home</option>
+						<option value="Other">Other</option>
+    					</select>
+  				</fieldset>
+				<input type="text" placeholder="Description" id="txDescription">
+				<input type="text" placeholder="Amount" id="txAmount">
+				<input type="text" placeholder="Number of Occurence per month" id="txOccurence">
+				<script>
+					document.write('<input type="hidden" id="txDate" value="'+ new Date() +'">');
+				</script>				
+								
+				
+				<a href="#editBudget" class="ui-btn" onClick="AddExpense()">Add Expense</a>
+				<br>
+				
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 				
 			</div>
@@ -249,10 +304,17 @@
 				<b>Target: <small id="MyTarget"></small></b>
 				<br>
 				<br>
+				<script>
+					document.write('<h3>Remaining Daily Budget: </h3>');
+					document.write('<br>');
+					document.write('<h3>Remaining Monthly Budget: </h3>');
+				</script>
+				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" ">Add Expense</a>
+				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-				
+
 			</div>
-			
+
 			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
 				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
@@ -267,11 +329,11 @@
 				            <a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
 				        </div>
 				    </form>
-				</div><!-- popup -->
+				</div>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
 			</div>
 		</div>
-		
+
    
     </body>
 </html>
