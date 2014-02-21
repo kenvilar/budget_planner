@@ -23,7 +23,7 @@
 			var version = '1.0';
 			var displayName = 'BudgetDB';
 			var maxSize = 200;
-
+	
 			function errorHandler(transaction, error) {
    				alert('Error: ' + error.message + ' code: ' + error.code);
 				}
@@ -35,17 +35,12 @@
 			function nullHandler(){};
 
 			function onBodyLoad(){
- 				alert("DEBUGGING: we are in the onBodyLoad() function");
- 				if (!window.openDatabase) {
-   					alert('Databases are not supported in this browser.');
-   				return;
- 				}
- 
+ 				
  				db = openDatabase(shortName, version, displayName,maxSize);
  	 			db.transaction(function(tx){
 
  				// Kung ganahan ta ug create-drop na db
-  				// tx.executeSql( 'DROP TABLE User',nullHandler,nullHandler);
+  				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
 
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,successCallBack);
 			
@@ -178,7 +173,8 @@
 			<div data-role="content">
 				<p>This is where you will add a new budget</p>
 				<input type="text" placeholder="Budget name" id="txName">
-				<input type="text" placeholder="Target" id="txTarget">
+				<input type="text" placeholder="Current Money" id="txMoney">
+				<input type="text" placeholder="Target Budget" id="txTarget">
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
