@@ -16,7 +16,7 @@
 		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
-		<script type="text/javascript" charset="utf-8">
+		<script type="text/javascript" charset="utf-8">	
 			var db;
 			var shortName = 'BudgetDB';
 			var version = '1.0';
@@ -225,7 +225,9 @@
 			<div data-role="content">
 				<p>This is where you will add a new budget</p>
 				<input type="text" placeholder="Budget name" id="txName">
-				<input type="text" placeholder="Target" id="txTarget">
+				<input type="text" placeholder="Income" id="txMoney">
+	
+				
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
