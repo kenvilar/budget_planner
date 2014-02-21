@@ -80,7 +80,7 @@
           						var row = result.rows.item(i);
           						/* $('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Money + ' , ' + row.Target); */
     					        html += '<li>';
-    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.BudgetId + '. ' + row.Name+ ' , ' + '</a>';
+    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
         					html += '</ul>';
@@ -94,36 +94,7 @@
 				
 			}
 			
-			function ListDBValues() {
- 				if (!window.openDatabase) {
-  					alert('Databases are not supported in this browser.');
-  				return;
- 				}
- 
- 				html = '';
- 				$('#Budgets').html('');
- 
-				db.transaction(function(transaction) {
-   					transaction.executeSql('SELECT * FROM BudgetDB;', [],
-     					function(transaction, result) {
-      					if (result != null && result.rows != null) {
-      						html = html + '<ul data-role="listview">';
-        					for (var i = 0; i < result.rows.length; i++) {
-          						var row = result.rows.item(i);
-    					        html += '<li>';
-    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Target + '</a>';
-    					        html += '</li>';
-    						    }
-        					html += '</ul>';
-        					$('#Budgets').append(html);
-      						}
-     					},errorHandler);
- 					},errorHandler,nullHandler);
- 
- 					return;
- 
-				
-			}
+			
 
 			function clearAddBudgetField() {
 				$('#txTarget').val('');
@@ -208,6 +179,7 @@
 			} */
 			
 			function DeleteBudget() {
+				var id = $('#Myid').val();
 				if (!window.openDatabase) {
 					alert('Databases are not supported in this browser.');
 					return;
@@ -216,8 +188,8 @@
 				confirm("Are you sure you want to delete?")
 				db.transaction(function(transaction) {
 					transaction.executeSql(
-							'DELETE FROM BudgetDB;',
-							[],
+							'DELETE FROM BudgetDB WHERE BudgetId = ?;',
+							[id],
 							nullHandler, errorHandler);
 				});
 				
