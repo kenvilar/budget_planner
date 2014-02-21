@@ -211,6 +211,8 @@
 				    		var bdgtnm = 'none';
 				    		var trgt = 'none';
 				    	}
+					
+
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
 				    }
 				);
@@ -282,7 +284,7 @@
 				            <input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
 				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
 				            <input type="number" name="budget_target" pattern="[0-9]*" id="trgt" value="" data-theme="a" placeholder="target">
-				            <a href="editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
+				            <a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
 				        </div>
 				    </form>
 				</div><!-- popup -->
