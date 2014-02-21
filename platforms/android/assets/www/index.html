@@ -34,7 +34,7 @@
 			function nullHandler(){};
 
 			function onBodyLoad(){
- 				alert("DEBUGGING: we are in the onBodyLoad() function");
+ 				//alert("DEBUGGING: we are in the onBodyLoad() function");
  				if (!window.openDatabase) {
    					alert('Databases are not supported in this browser.');
    				return;
@@ -46,7 +46,7 @@
  				// Kung ganahan ta ug create-drop na db
   				// tx.executeSql( 'DROP TABLE User',nullHandler,nullHandler);
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,successCallBack);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 			
  				ListDBValues();
  				GetName();
@@ -78,6 +78,13 @@
 				
 			}
 
+			function clearAddBudgetField() {
+				$('#txTarget').val('');
+				$('#txName').val('');
+				
+				return;
+			}
+			
 			function AddValueToDB() {
 				if (!window.openDatabase) {
 					alert('Databases are not supported in this browser.');
@@ -201,7 +208,7 @@
   			</div>
 
 			<div data-role="content">
-  				<a href="#addBudget" data-role="button">Add Budget</a>
+  				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-theme="b" data-content-theme="b">
 					<h2>View Budget List</h2>
 					    <ul data-role="listview"">
