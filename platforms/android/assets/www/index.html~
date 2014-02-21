@@ -154,30 +154,6 @@
 			}
 			
 			
-			/* function GetTarget() {
- 				if (!window.openDatabase) {
-  					alert('Databases are not supported in this browser.');
-  				return;
- 				}
- 
- 				$('#MyTarget').html('');
- 
-				db.transaction(function(transaction) {
-   					transaction.executeSql('SELECT * FROM BudgetDB;', [],
-     					function(transaction, result) {
-      					if (result != null && result.rows != null) {
-        					for (var i = 0; i < result.rows.length; i++) {
-          						var row = result.rows.item(i);
-          						$('#MyTarget').append(row.Target);
-        						}
-      						}
-     					},errorHandler);
- 					},errorHandler,nullHandler);
- 
- 					return;
- 
-				
-			} */
 			
 			function DeleteBudget() {
 				var id = $('#Myid').val();
@@ -204,15 +180,14 @@
 				var id = $('#Myid').val();
 				db.transaction(
 				    function (transaction) {
-				    	//if( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
-				    	//	var bdgtnm = $('#bdgtnm').val();
-				    	//	var trgt = $('#trgt').val();
-				    	//} else {
-				    	//	var bdgtnm = 'none';
-				    	//	var trgt = 'none';
-				    	//}
-					var bdgtnm = $('#bdgtnm').val();
-				    	var trgt = $('#trgt').val();
+				    	if( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
+				    		var bdgtnm = $('#bdgtnm').val();
+				    		var trgt = $('#trgt').val();
+				    	} else {
+				    		var bdgtnm = 'none';
+				    		var trgt = 'none';
+				    	}
+					
 
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
 				    }
@@ -239,12 +214,10 @@
 
 			<div data-role="content">
   				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
-  				<div data-role="collapsible" data-theme="b" data-content-theme="b">
+  				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b">
 					<h2>View Budget List</h2>
 						<div id="Budgets"></div>
-					    <!-- <ul data-role="listview"">
-					        <li><a href="#editBudget" id="Budgets"></a></li>
-					    </ul> -->
+					
 				</div>
   			</div>
 		</div>
@@ -275,6 +248,12 @@
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Target: <small id="MyTarget"></small></b>
 				<br>
+				<br>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+				
+			</div>
+			
+			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
 				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
 				    <form>
@@ -290,9 +269,6 @@
 				    </form>
 				</div><!-- popup -->
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
-				<br>
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-				
 			</div>
 		</div>
 		
