@@ -30,7 +30,7 @@
 			var version = '1.0';
 			var displayName = 'BudgetDB';
 			var maxSize = 200;
-
+	
 			function errorHandler(transaction, error) {
    				alert('Error: ' + error.message + ' code: ' + error.code);
 				}
@@ -52,7 +52,8 @@
  	 			db.transaction(function(tx){
 
  				// Kung ganahan ta ug create-drop na db
-  				//tx.executeSql( 'DROP TABLE User',nullHandler,nullHandler);
+  				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
+
 
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
@@ -218,8 +219,7 @@
 				GetTarget();
 				return false;
 			}
-			
-			
+
 		</script>
 
 
@@ -254,9 +254,9 @@
 				<p>This is where you will add a new budget</p>
 				<input type="text" placeholder="Budget name" id="txName">
 				<input type="text" placeholder="Income" id="txMoney">
-				<!-- <input type="text" placeholder="Target" id="txTarget"> -->
 				<label for="Target">Target Savings:</label>
 				<input type="range" id="txTarget" min="0">
+
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>

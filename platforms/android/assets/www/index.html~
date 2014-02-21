@@ -15,14 +15,22 @@
 		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.css">
 		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-		<script type="text/javascript" charset="utf-8">
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script type="text/javascript" charset="utf-8">	
+		
+			$(document).ready(function () {
+				$('#txMoney').keyup(function () {
+					$('#txTarget').val($('#txMoney').val()/2);
+					$('#txTarget').attr('max',$('#txMoney').val());
+				});
+			});
+		
 			var db;
 			var shortName = 'BudgetDB';
 			var version = '1.0';
 			var displayName = 'BudgetDB';
 			var maxSize = 200;
-
+	
 			function errorHandler(transaction, error) {
    				alert('Error: ' + error.message + ' code: ' + error.code);
 				}
@@ -34,7 +42,7 @@
 			function nullHandler(){};
 
 			function onBodyLoad(){
- 				alert("DEBUGGING: we are in the onBodyLoad() function");
+ 				//alert("DEBUGGING: we are in the onBodyLoad() function");
  				if (!window.openDatabase) {
    					alert('Databases are not supported in this browser.');
    				return;
@@ -44,11 +52,15 @@
  	 			db.transaction(function(tx){
 
  				// Kung ganahan ta ug create-drop na db
-  				// tx.executeSql( 'DROP TABLE User',nullHandler,nullHandler);
+  				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,successCallBack);
+
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+				
 			
  				ListDBValues();
+ 				GetName();
+ 				GetTarget();
 			}
 
 			function ListDBValues() {
@@ -57,15 +69,109 @@
   				return;
  				}
  
+ 				html = '';
  				$('#Budgets').html('');
  
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT * FROM BudgetDB;', [],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
+      						html = html + '<ul data-role="listview">';
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' ' + row.Target);
+          						/* $('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Money + ' , ' + row.Target); */
+    					        html += '<li>';
+    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.BudgetId + '. ' + row.Name+ ' , ' + '</a>';
+    					        html += '</li>';
+        						}
+        					html += '</ul>';
+        					$('#Budgets').append(html);
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+ 
+				
+			}
+			
+			function ListDBValues() {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				html = '';
+ 				$('#Budgets').html('');
+ 
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM BudgetDB;', [],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+      						html = html + '<ul data-role="listview">';
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+    					        html += '<li>';
+    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Target + '</a>';
+    					        html += '</li>';
+    						    }
+        					html += '</ul>';
+        					$('#Budgets').append(html);
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+ 
+				
+			}
+
+			function clearAddBudgetField() {
+				$('#txTarget').val('');
+				$('#txName').val('');
+				$('#txMoney').val('');
+				
+				return;
+			}
+			
+			function AddValueToDB() {
+				if (!window.openDatabase) {
+					alert('Databases are not supported in this browser.');
+					return;
+				}
+
+				db.transaction(function(transaction) {
+					transaction.executeSql(
+							'INSERT INTO BudgetDB(Name, Money, Target) VALUES (?,?,?)',
+							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val() ],
+							nullHandler, errorHandler);
+				});
+
+				ListDBValues();
+				GetName();
+				GetTarget();
+				return false;
+			}
+			
+			function GetName(id) {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				$('#MyTarget').html('');
+ 				$('#MyName').html('');
+ 
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          						$('#MyName').append(row.Name);
+          						$('#MyTarget').append(row.Target);
+          						$('#Myid').append(row.BudgetId);
+          						$('#Myid').val(row.BudgetId);
         						}
       						}
      					},errorHandler);
@@ -73,21 +179,75 @@
  
  					return;
  
-				}
- 
-			function AddValueToDB() {
+				
+			}
+			
+			
+			/* function GetTarget() {
  				if (!window.openDatabase) {
-   					alert('Databases are not supported in this browser.');
-   					return;
+  					alert('Databases are not supported in this browser.');
+  				return;
  				}
  
- 				db.transaction(function(transaction) {
-   				transaction.executeSql('INSERT INTO BudgetDB(Name, Target) VALUES (?,?)',[$('#txName').val(), $('#txTarget').val()], nullHandler,errorHandler);});
+ 				$('#MyTarget').html('');
  
- 				ListDBValues();
- 				return false;
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM BudgetDB;', [],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          						$('#MyTarget').append(row.Target);
+        						}
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+ 
+				
+			} */
+			
+			function DeleteBudget() {
+				if (!window.openDatabase) {
+					alert('Databases are not supported in this browser.');
+					return;
+				}
+
+				confirm("Are you sure you want to delete?")
+				db.transaction(function(transaction) {
+					transaction.executeSql(
+							'DELETE FROM BudgetDB;',
+							[],
+							nullHandler, errorHandler);
+				});
+				
+				ListDBValues();
+				GetName();
+				GetTarget();
+				return false;
 			}
-		
+			
+			function updateBudget(){
+				var id = $('#Myid').val();
+				db.transaction(
+				    function (transaction) {
+				    	if( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
+				    		var bdgtnm = $('#bdgtnm').val();
+				    		var trgt = $('#trgt').val();
+				    	} else {
+				    		var bdgtnm = 'none';
+				    		var trgt = 'none';
+				    	}
+				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
+				    }
+				);
+				ListDBValues();
+				GetName(id);
+				GetTarget();
+				return false;
+			}
+
 		</script>
 
 
@@ -95,28 +255,68 @@
     </head>
 	
     <body onload="onBodyLoad()">
-   		<div data-role="page" id="mainpage">
+    
+   		<div data-role="page" id="mainpage" onload="onBodyLoad()">
+   		
 			<div data-role="header">
     			<h1>Home</h1>
   			</div>
 
 			<div data-role="content">
-  				<a href="#addBudget" data-role="button">Add Budget</a>
+  				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
+  				<div data-role="collapsible" data-theme="b" data-content-theme="b">
+					<h2>View Budget List</h2>
+						<div id="Budgets"></div>
+					    <!-- <ul data-role="listview"">
+					        <li><a href="#editBudget" id="Budgets"></a></li>
+					    </ul> -->
+				</div>
   			</div>
-			<div data-role="content">
-				<ul id="Budgets"></ul>
-			</div>
 		</div>
 		
-		<div data-role="page" id="addBudget">
+		<div data-role="page" id="addBudget" >
 			<div data-role="header">
 				<h1>Add Budget</h1>
 			</div>
 			<div data-role="content">
 				<p>This is where you will add a new budget</p>
 				<input type="text" placeholder="Budget name" id="txName">
-				<input type="text" placeholder="Target" id="txTarget">
+				<input type="text" placeholder="Income" id="txMoney">
+				<label for="Target">Target Savings:</label>
+				<input type="range" id="txTarget" min="0">
+
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
+				<br>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+				
+			</div>
+		</div>
+		
+		<div data-role="page" id="editBudget" onload="onBodyLoad()">
+			<div data-role="header">
+				<h1>Edit Budget</h1>
+			</div>
+			<div data-role="content">
+				<b>Budget Name: <small id="MyName"></small></b><br>
+				<b>Target: <small id="MyTarget"></small></b>
+				<br>
+				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
+				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
+				    <form>
+				        <div style="padding:10px 20px;">
+				            <h3>Edit your budget</h3>
+				            <input type="hidden" id = "Myid" for="Myid"></input>
+				            <label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
+				            <input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
+				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
+				            <input type="number" name="budget_target" pattern="[0-9]*" id="trgt" value="" data-theme="a" placeholder="target">
+				            <a href="editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
+				        </div>
+				    </form>
+				</div><!-- popup -->
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
+				<br>
+				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 				
 			</div>
 		</div>
