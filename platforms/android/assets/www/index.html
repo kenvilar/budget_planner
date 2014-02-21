@@ -208,13 +208,14 @@
 					return;
 				}
 
-				confirm("Are you sure you want to delete?")
-				db.transaction(function(transaction) {
-					transaction.executeSql(
-							'DELETE FROM BudgetDB WHERE BudgetId = ?;',
-							[id],
-							nullHandler, errorHandler);
-				});
+				if(confirm("Are you sure you want to delete?")) {
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'DELETE FROM BudgetDB WHERE BudgetId = ?;',
+								[id],
+								nullHandler, errorHandler);
+					});
+				}
 
 				ListDBValues();
 				GetName();
@@ -249,6 +250,17 @@
     </head>
 
     <body onload="onBodyLoad()">
+    
+    	<div id="fb-root"></div>
+		<script>
+			(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) return;
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=606691399348119";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
     
    		<div data-role="page" id="mainpage" onload="onBodyLoad()">
    		
@@ -351,6 +363,7 @@
 				    </form>
 				</div><!-- popup -->
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
+				<a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a>
 			</div>
 		</div>
 
