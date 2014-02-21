@@ -17,6 +17,14 @@
 		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">	
+		
+			$(document).ready(function () {
+				$('#txMoney').keyup(function () {
+					$('#txTarget').val($('#txMoney').val()/2);
+					$('#txTarget').attr('max',$('#txMoney').val());
+				});
+			});
+		
 			var db;
 			var shortName = 'BudgetDB';
 			var version = '1.0';
@@ -44,9 +52,10 @@
  	 			db.transaction(function(tx){
 
  				// Kung ganahan ta ug create-drop na db
-  				// tx.executeSql( 'DROP TABLE User',nullHandler,nullHandler);
+  				//tx.executeSql( 'DROP TABLE User',nullHandler,nullHandler);
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+				
 			
  				ListDBValues();
  				GetName();
@@ -67,7 +76,7 @@
       					if (result != null && result.rows != null) {
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Target);
+          						$('#Budgets').append('<br>' + row.BudgetId + '. ' + row.Name+ ' , ' + row.Money + ' , ' + row.Target);
         						}
       						}
      					},errorHandler);
@@ -81,6 +90,7 @@
 			function clearAddBudgetField() {
 				$('#txTarget').val('');
 				$('#txName').val('');
+				$('#txMoney').val('');
 				
 				return;
 			}
@@ -93,8 +103,8 @@
 
 				db.transaction(function(transaction) {
 					transaction.executeSql(
-							'INSERT INTO BudgetDB(Name, Target) VALUES (?,?)',
-							[ $('#txName').val(), $('#txTarget').val() ],
+							'INSERT INTO BudgetDB(Name, Money, Target) VALUES (?,?,?)',
+							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val() ],
 							nullHandler, errorHandler);
 				});
 
@@ -226,8 +236,9 @@
 				<p>This is where you will add a new budget</p>
 				<input type="text" placeholder="Budget name" id="txName">
 				<input type="text" placeholder="Income" id="txMoney">
-	
-				
+				<!-- <input type="text" placeholder="Target" id="txTarget"> -->
+				<label for="Target">Target Savings:</label>
+				<input type="range" id="txTarget" min="0">
 				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
