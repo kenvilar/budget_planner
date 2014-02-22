@@ -147,11 +147,13 @@
 				$('#currentBudgetID').val(id);
  				if (!window.openDatabase) {
   					alert('Databases are not supported in this browser.');
-  				return;
+  					return;
  				}
  
  				$('#MyTarget').html('');
  				$('#MyName').html('');
+				$('#dailyBudget').html('');
+				$('#monthlyBudget').html('');
  
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
@@ -168,6 +170,10 @@
      					},errorHandler);
  					},errorHandler,nullHandler);
  
+				//Di pa ni final
+				$('#dailyBudget').append(25);
+				$('#monthlyBudget').append(50);
+				
  					return;
  
 
@@ -184,6 +190,13 @@
 					db.transaction(function(transaction) {
 						transaction.executeSql(
 								'DELETE FROM BudgetDB WHERE BudgetId = ?;',
+								[id],
+								nullHandler, errorHandler);
+					});
+
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'DELETE FROM Expense WHERE Budget = ?;',
 								[id],
 								nullHandler, errorHandler);
 					});
@@ -316,10 +329,9 @@
 				<b>Target: <small id="MyTarget"></small></b>
 				<br>
 				<br>
-				<script>
-					document.write('<h3>Remaining Daily Budget: </h3>');
-					document.write('<br>');
-					document.write('<h3>Remaining Monthly Budget: </h3>');
+				<h3>Remaining Daily Budget: </h3><h2 id="dailyBudget"></h2>
+				<br>
+				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</script>
 				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" ">Add Expense</a>
 				<br>
