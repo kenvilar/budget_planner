@@ -12,9 +12,9 @@
 		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" src="jquery-2.1.0.min.js"></script> -->
 
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.css">
-		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1\jquery.mobile-1.4.1.min.css">
+		<script type="text/javascript" src="js\jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="jquery.mobile-1.4.1\jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">	
 
@@ -85,7 +85,7 @@
           						var row = result.rows.item(i);
           					
     					        html += '<li>';
-    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.Name+ ' , ' + row.Target + '</a>';
+    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn">' + row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
         					html += '</ul>';
@@ -154,6 +154,8 @@
  				$('#MyName').html('');
 				$('#dailyBudget').html('');
 				$('#monthlyBudget').html('');
+ 				$('#MyMoney').html('');
+
  
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
@@ -162,6 +164,7 @@
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
+          						$('#MyMoney').append(row.Money);
           						$('#MyTarget').append(row.Target);
           						$('#Myid').append(row.BudgetId);
           						$('#Myid').val(row.BudgetId);
@@ -170,7 +173,7 @@
      					},errorHandler);
  					},errorHandler,nullHandler);
  
-
+				//Di pa ni final
 				$('#dailyBudget').append(25);
 				$('#monthlyBudget').append(50);
 				
@@ -326,6 +329,7 @@
 			</div>
 			<div data-role="content">
 				<b>Budget Name: <small id="MyName"></small></b><br>
+				<b>Budget Money: <small id="MyMoney"></small></b><br>
 				<b>Target: <small id="MyTarget"></small></b>
 				<br>
 				<br>
