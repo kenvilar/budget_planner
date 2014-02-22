@@ -172,9 +172,27 @@
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
- 
+ 				
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+							$('#dailyBudget').append(row.Target + 1000);
+							//$('#dailyBudget').append(row.Target);
+          						//$('#MyName').append(row.Name);
+          						//$('#MyMoney').append(row.Money);
+          						//$('#MyTarget').append(row.Target);
+          						//$('#Myid').append(row.BudgetId);
+          						//$('#Myid').val(row.BudgetId);
+        						}
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+
 				//Di pa ni final
-				$('#dailyBudget').append(25);
+				//$('#dailyBudget').append('+ date +');
 				$('#monthlyBudget').append(50);
 				
  					return;
