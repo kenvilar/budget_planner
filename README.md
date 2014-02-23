@@ -26,10 +26,10 @@ To create a user-friendly budget planning application for users who want to mana
 ---
 
 ###CONTRIBUTORS###
-[Apas, Carlo Joel](https://github.com/carloapas)
-[Benitez, Jervey](https://github.com/jervey)
-[Racsa, Jemuel](https://github.com/jemuelracsa)
-[Vilar, Ken](https://github.com/kenvilar)
+- [Apas, Carlo Joel](https://github.com/carloapas)
+- [Benitez, Jervey](https://github.com/jervey)
+- [Racsa, Jemuel](https://github.com/jemuelracsa)
+- [Vilar, Ken](https://github.com/kenvilar)
 
 [Top](#top)
 
