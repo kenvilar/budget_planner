@@ -12,9 +12,9 @@
 		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" src="jquery-2.1.0.min.js"></script> -->
 
-		<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1\jquery.mobile-1.4.1.min.css">
-		<script type="text/javascript" src="js\jquery-1.10.2.min.js"></script>
-		<script type="text/javascript" src="jquery.mobile-1.4.1\jquery.mobile-1.4.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1/jquery.mobile-1.4.1.min.css">
+		<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="jquery.mobile-1.4.1/jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">	
 
@@ -85,7 +85,7 @@
           						var row = result.rows.item(i);
           					
     					        html += '<li>';
-    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn">' + row.Name+ ' , ' + row.Target + '</a>';
+    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn ui-corner-all ui-shadow">'+row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
         					html += '</ul>';
@@ -155,8 +155,9 @@
 				$('#dailyBudget').html('');
 				$('#monthlyBudget').html('');
  				$('#MyMoney').html('');
+					
 
- 
+
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
      					function(transaction, result) {
@@ -165,6 +166,7 @@
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
           						$('#MyMoney').append(row.Money);
+							$('#dailyBudget').append('₱<input type="text" id="totalMoney" value="'+ row.Money +'" readonly>');
           						$('#MyTarget').append(row.Target);
           						$('#Myid').append(row.BudgetId);
           						$('#Myid').val(row.BudgetId);
@@ -173,26 +175,6 @@
      					},errorHandler);
  					},errorHandler,nullHandler);
  				
-				db.transaction(function(transaction) {
-   					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
-     					function(transaction, result) {
-      					if (result != null && result.rows != null) {
-        					for (var i = 0; i < result.rows.length; i++) {
-          						var row = result.rows.item(i);
-							$('#dailyBudget').append(row.Target + 1000);
-							//$('#dailyBudget').append(row.Target);
-          						//$('#MyName').append(row.Name);
-          						//$('#MyMoney').append(row.Money);
-          						//$('#MyTarget').append(row.Target);
-          						//$('#Myid').append(row.BudgetId);
-          						//$('#Myid').val(row.BudgetId);
-        						}
-      						}
-     					},errorHandler);
- 					},errorHandler,nullHandler);
-
-				//Di pa ni final
-				//$('#dailyBudget').append('+ date +');
 				$('#monthlyBudget').append(50);
 				
  					return;
@@ -265,7 +247,7 @@
 			  var js, fjs = d.getElementsByTagName(s)[0];
 			  if (d.getElementById(id)) return;
 			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=606691399348119";
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=170509146458314";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 		</script>
@@ -309,6 +291,7 @@
 
 		<div data-role="page" id="addExpensePage" >
 			<div data-role="header">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
@@ -319,10 +302,10 @@
       						<option value="Food">Food / Beverages</option>
       						<option value="Transportation">Transportation</option>
       						<option value="Education">Education</option>
-						<option value="Clothing">Clothing</option>
-						<option value="Personal">Personal</option>
-						<option value="Home">Home</option>
-						<option value="Other">Other</option>
+							<option value="Clothing">Clothing</option>
+							<option value="Personal">Personal</option>
+							<option value="Home">Home</option>
+							<option value="Other">Other</option>
     					</select>
   				</fieldset>
 				<input type="text" placeholder="Description" id="txDescription">
@@ -336,7 +319,7 @@
 				<a href="#editBudget" class="ui-btn" onClick="AddExpense()">Add Expense</a>
 				<br>
 				
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 				
 			</div>
 		</div>
@@ -346,9 +329,10 @@
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content">
+				<div class="fb-share-button" data-href="https://www.facebook.com/" data-type="button"></div><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
-				<b>Budget Money: <small id="MyMoney"></small></b><br>
-				<b>Target: <small id="MyTarget"></small></b>
+				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
+				<b>Target: ₱<small id="MyTarget"></small></b>
 				<br>
 				<br>
 				<h3>Remaining Daily Budget: </h3><h2 id="dailyBudget"></h2>
@@ -360,7 +344,6 @@
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
 			</div>
-
 			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
 				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
@@ -373,11 +356,12 @@
 				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
 				            <input type="number" name="budget_target" pattern="[0-9]*" id="trgt" value="" data-theme="a" placeholder="target">
 				            <a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
+							<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-arrow-l">Cancel</a>	
 				        </div>
 				    </form>
 				</div>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
-				<a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a>
+				<!-- <a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a> -->
 			</div>
 		</div>
 
