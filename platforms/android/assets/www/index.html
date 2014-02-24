@@ -35,17 +35,14 @@
 				$('#txFrequency').change(function () {
 					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
     					if($('#txFrequency').val() == "4"){
-						window.alert("4");
 						$('#txOccurence').val('4');
 						$('#txOccurence').hide();			
 					}
 					else if($('#txFrequency').val() == "1"){
-						window.alert("1");
 						$('#txOccurence').val('1');
 						$('#txOccurence').hide();				
 					}
 					else{
-						window.alert("other");
 						$('#txOccurence').val('');
 						$('#txOccurence').show();				
 					}
