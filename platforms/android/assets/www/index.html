@@ -55,11 +55,11 @@
   				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
 
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date DATE NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date Date NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
 				db.transaction(function(tx){
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date DATE NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
 
  				ListDBValues();
@@ -109,6 +109,13 @@
 				return;
 			}
 
+			function clearAddExpenseField() {
+				$('#txDescription').val('');
+				$('#txAmount').val('');
+				$('#txOccurence').val('');
+				return;
+			}
+
 			function AddValueToDB() {
 				if (!window.openDatabase) {
 					alert('Databases are not supported in this browser.');
@@ -130,19 +137,35 @@
 
 
 			function AddExpense() {
-				if (!window.openDatabase) {
-					alert('Databases are not supported in this browser.');
-					return;
-				}
+				
 
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
 
+				
+				GetName($('#currentBudgetID').val());
+				$.mobile.changePage("index.html#editBudget");
 								
-				return false;
+				return;
 			}
 			
+
+			function getDaysBetween(date1, date2) {
+  					//Get 1 day in milliseconds
+  					var one_day=1000*60*60*24;
+
+  					// Convert both dates to milliseconds
+ 					var date1_ms = date1.getTime();
+  					var date2_ms = date2.getTime();
+
+  					// Calculate the difference in milliseconds
+  					var difference_ms = date2_ms - date1_ms;
+    
+  					// Convert back to days and return
+  					return Math.round(difference_ms/one_day); 
+			}
+
 			function GetName(id) {
 				$('#currentBudgetID').val(id);
  				if (!window.openDatabase) {
@@ -155,18 +178,28 @@
 				$('#dailyBudget').html('');
 				$('#monthlyBudget').html('');
  				$('#MyMoney').html('');
-					
 
+				var budgetDate;
+				var totalMoney;
+				var targetSavings;
+				var totalExpense = 0;
+				var differences;
+				var lastDayOfBudgetMonth;
+				var monthlyBudgetLeft;
+				var dailyBudgetLeft;
 
 				db.transaction(function(transaction) {
-   					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
+   					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB WHERE BudgetId = ?;', [id],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
           						$('#MyMoney').append(row.Money);
-							$('#dailyBudget').append('₱<input type="text" id="totalMoney" value="'+ row.Money +'" readonly>');
+							budgetDate = new Date(row.Date);
+							lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
+							totalMoney = row.Money;
+							targetSavings = row.Target;
           						$('#MyTarget').append(row.Target);
           						$('#Myid').append(row.BudgetId);
           						$('#Myid').val(row.BudgetId);
@@ -174,9 +207,27 @@
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
- 				
-				$('#monthlyBudget').append(50);
-				
+
+					
+					db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM Expense WHERE Budget = ?;', [id],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+						
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          							totalExpense = totalExpense + (row.Amount * row.Occurence);
+        						}
+						differences = getDaysBetween(budgetDate,lastDayOfBudgetMonth) + 1;
+						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
+						dailyBudgetLeft = monthlyBudgetLeft / differences;
+						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
+						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 					
+					
  					return;
  
 
@@ -316,7 +367,7 @@
 				</script>				
 								
 				
-				<a href="#editBudget" class="ui-btn" onClick="AddExpense()">Add Expense</a>
+				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
 				<br>
 				
 				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
@@ -339,7 +390,7 @@
 				<br>
 				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</script>
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" ">Add Expense</a>
+				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
