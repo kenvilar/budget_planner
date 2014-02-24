@@ -140,6 +140,15 @@
 
 				return;
 			}
+			
+			<!---------------------------------->
+			function connectToFacebook(){
+				$('#txFbUsername').val('');
+				$('#txFbPassword').val('');
+				
+				return;
+			}
+			<!---------------------------------->
 
 			function clearAddExpenseField() {
 				$('#txDescription').val('');
@@ -348,7 +357,29 @@
 					
 				</div>
   			</div>
+  			
+  			<!-------------FACEBOOK-------------------->
+  			<div data-role ="content">
+  				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
+  				Share to Facebook</a>
+  			</div>
+  			<!------------------------------------------>
+  			
 		</div>
+		
+		<!-------------------------FACEBOOK---------------------------------->
+		<div data-role="page" id="facebookConnect">
+			<div data-role="header">
+				<h1>Login</h1>
+			</div>
+			<div data-role="content">
+			<input type="text" placeholder="Username" id="txFbUsername">
+			<input type="text" placeholder="Password" id="txFbPasword">
+			<a href="#mainpage" class="ui-btn" onclick="">Login</a> 
+			<a href="#mainpage" class="ui-btn">Back</a>
+			</div>
+		</div>
+		<!------------------------------------------------------------------->
 
 		<div data-role="page" id="addBudget" >
 			<div data-role="header">
