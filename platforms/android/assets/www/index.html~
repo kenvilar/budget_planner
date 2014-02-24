@@ -154,16 +154,38 @@
    					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
+      						html = html + '<center><h2>Summary</h2><center>';
       						html = html + '<table border="1" style="width:100%">';
-      						html += '<tr><th>Description</th><th>Category</th><th>Amount</th></tr>';
+      						html += '<tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>';
+							var totalExpenses = 0;
+							
+							var month=new Array();
+							month[0]="Jan";
+							month[1]="Feb";
+							month[2]="Mar";
+							month[3]="Apr";
+							month[4]="May";
+							month[5]="Jun";
+							month[6]="Jul";
+							month[7]="Aug";
+							month[8]="Sep";
+							month[9]="Oct";
+							month[10]="Nov";
+							month[11]="Dec";
+							
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          					
+								
+								var myDate = new Date(row.Date);
+								//var newDate = formatDate(myDate,"MMM d, y");
+								totalExpenses += row.Amount;
     					        html += '<tr>';
-    					        html += '<a  class=""><td>' +row.Description+ '</td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
+    					        html += '<a><td>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</td> <td>'+ row.Description +' </td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
     					        html += '</tr>';
         						}
         					html += '</table>';
+							html += '<h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3>';
+        					html +=	'<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>';
         					$('#viewSummaryPage').append(html);
       						}
      					},errorHandler);
@@ -171,6 +193,7 @@
  
  					return;
 			}
+
 
 
 
@@ -199,14 +222,40 @@
 			}
 
 			function AddValueToDB() {
+				if (!window.openDatabase) {
+					alert('Databases are not supported in this browser.');
+					return;
+				}
+
+				var bName = document.forms["addForm"]["txName"].value;
+				var bMoney = document.forms["addForm"]["txMoney"].value;
 				
-				db.transaction(function(transaction) {
+				if (bName==null || bName=="") {
+					alert("Please enter a budget name!");
+					window.location.reload(true);
+					return false;
+				} else if (bMoney==null || bMoney=="") {
+					alert("Please enter a budget income!");
+					window.location.reload(true);
+					return false;
+				}else if (bMoney<=0) {
+					alert("Budget income must be greater than zero!");
+					window.location.reload(true);
+					return false;
+				}else if (isNaN(bMoney)) {
+					alert("Budget income must be an integer!");
+					window.location.reload(true);
+					return false;
+				}
+				else 
+					db.transaction(function(transaction) {
 					transaction.executeSql(
 							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
 							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()],
 							nullHandler, errorHandler);
 				});
-
+					alert("Added successfully!");
+					window.history.back()
 				ListDBValues();
 				GetName(id);
 				$.mobile.changePage("index.html#mainpage");
@@ -344,24 +393,36 @@
 
 			function updateBudget(){
 				var id = $('#Myid').val();
+				var bdgtnm = document.getElementById("bdgtnm");
+				var trgt = document.getElementById("trgt");
 				db.transaction(
 				    function (transaction) {
-				    	if( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
+						if( ($('#bdgtnm').val() == null) || ($('#bdgtnm').val() == "") ) {
+							alert("Please enter a budget name!");
+							trgt.value = " ";
+							return false;
+						}else if ( ($('#trgt').val() == null) || ($('#trgt').val() == "")  || !isNaN('trgt') ) {
+							alert("Budget target is required and must be an integer!");
+							bdgtnm.value = " ";
+							trgt.value = " ";
+							return false;
+						}else if ( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
 				    		var bdgtnm = $('#bdgtnm').val();
 				    		var trgt = $('#trgt').val();
+							transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
 				    	} else {
-				    		var bdgtnm = 'none';
-				    		var trgt = 'none';
+				    		return false;
 				    	}
-					
-
+			
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
+						
 				    }
 				);
 				ListDBValues();
 				GetName(id);
 				return false;
 			}
+
 
 		</script>
 
@@ -377,7 +438,7 @@
 			  var js, fjs = d.getElementsByTagName(s)[0];
 			  if (d.getElementById(id)) return;
 			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=170509146458314";
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=553068804738984";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 		</script>
@@ -421,20 +482,22 @@
 		</div>
 		<!------------------------------------------------------------------->
 
-		<div data-role="page" id="addBudget" >
+		<div data-role="page" id="addBudget" onload="onBodyLoad()">
 			<div data-role="header">
 				<h1>Add Budget</h1>
 			</div>
 			<div data-role="content">
 				<p>This is where you will add a new budget</p>
-				<input type="text" placeholder="Budget name" id="txName">
-				<input type="text" placeholder="Income" id="txMoney">
-				<label for="Target">Target Savings:</label>
-				<input type="range" id="txTarget" min="0">
-				<script>
-					document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
-				</script>
-				<a href="#mainpage" class="ui-btn" id="AddBudgetLink" onClick="AddValueToDB()">Add Budget</a>
+				<form name="addForm" method="post" onsubmit="AddValueToDB()">
+					<input type="text" placeholder="Budget name" id="txName">
+					<input type="text" placeholder="Income" id="txMoney">
+					<label for="Target">Target Savings:</label>
+					<input type="range" id="txTarget" min="0">
+					<script>
+						document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
+					</script>
+					<a href="#addBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="AddValueToDB()">Add Budget</a>
+				</form>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
@@ -487,12 +550,13 @@
 			</div>
 		</div>
 		
-		<div data-role="page" id="editBudget" onload="onBodyLoad()">
-			<div data-role="header">
+		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget">
+			<div data-role="header" data-position="fixed">
 				<h1>Edit Budget</h1>
+				<a href="#nav-panel" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-bars"><p></p></a>
 			</div>
-			<div data-role="content">
-				<div class="fb-share-button" data-href="https://www.facebook.com/" data-type="button"></div><br>
+			<div role="main" class="ui-content jqm-content jqm-fullwidth">
+				<div class="fb-share-button" data-href="https://github.com/kenvilar/budget_planner" data-type="button"></div><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
 				<b>Target: ₱<small id="MyTarget"></small></b>
@@ -501,7 +565,8 @@
 				<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
 				<br>
 				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
-				</script>
+				
+				<div data-demo-html="#editBudget"></div>
 
 				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
 				<br>
@@ -529,6 +594,14 @@
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
 				<!-- <a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a> -->
 			</div>
+			<div data-role="panel" data-position-fixed="true" data-position="right" data-display="push" data-theme="b" id="nav-panel">
+				<ul data-role="listview">
+					<li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
+						<li><a href="#panel-fixed-page2">Accordion</a></li>
+						<li><a href="#panel-fixed-page2">Ajax Navigation</a></li>
+				</ul>
+			</div>
+			
 		</div>
 
    
