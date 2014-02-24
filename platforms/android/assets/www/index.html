@@ -23,6 +23,9 @@
 					$('#txTarget').val($('#txMoney').val()/2);
 					$('#txTarget').attr('max',$('#txMoney').val());
 				});
+				
+				
+
 			});
 
 			var db;
@@ -149,11 +152,7 @@
 			}
 
 			function AddValueToDB() {
-				if (!window.openDatabase) {
-					alert('Databases are not supported in this browser.');
-					return;
-				}
-
+				
 				db.transaction(function(transaction) {
 					transaction.executeSql(
 							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
@@ -163,13 +162,13 @@
 
 				ListDBValues();
 				GetName(id);
+				$.mobile.changePage("index.html#mainpage");
 				return false;
 			}
 
 
 			function AddExpense() {
 				
-
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
@@ -363,7 +362,7 @@
 				<script>
 					document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
 				</script>
-				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
+				<a href="#mainpage" class="ui-btn" id="AddBudgetLink" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 

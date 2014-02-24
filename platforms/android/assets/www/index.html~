@@ -23,6 +23,9 @@
 					$('#txTarget').val($('#txMoney').val()/2);
 					$('#txTarget').attr('max',$('#txMoney').val());
 				});
+				
+				
+
 			});
 
 			var db;
@@ -97,6 +100,39 @@
  
 
 			}
+			
+			function viewSummary() {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				html = '';
+ 				$('#viewSummaryPage').html('');
+ 				
+ 				var currentBudgetId = $('#currentBudgetID').val();
+ 				
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+      						html = html + '<table border="1" style="width:100%">';
+      						html += '<tr><th>Description</th><th>Category</th><th>Amount</th></tr>';
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          					
+    					        html += '<tr>';
+    					        html += '<a  class=""><td>' +row.Description+ '</td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
+    					        html += '</tr>';
+        						}
+        					html += '</table>';
+        					$('#viewSummaryPage').append(html);
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+			}
 
 
 
@@ -116,11 +152,7 @@
 			}
 
 			function AddValueToDB() {
-				if (!window.openDatabase) {
-					alert('Databases are not supported in this browser.');
-					return;
-				}
-
+				
 				db.transaction(function(transaction) {
 					transaction.executeSql(
 							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
@@ -130,13 +162,13 @@
 
 				ListDBValues();
 				GetName(id);
+				$.mobile.changePage("index.html#mainpage");
 				return false;
 			}
 
 
 			function AddExpense() {
 				
-
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
@@ -144,7 +176,8 @@
 				
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
-								
+				
+				window.alert("Expense added successfully!");
 				return;
 			}
 			
@@ -329,13 +362,15 @@
 				<script>
 					document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
 				</script>
-				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
+				<a href="#mainpage" class="ui-btn" id="AddBudgetLink" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
 			</div>
 		</div>
 
+		<div data-role="page" id="viewSummaryPage"></div>
+		
 		<div data-role="page" id="addExpensePage" >
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
@@ -387,7 +422,9 @@
 				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</script>
 
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
+				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
+				<br>
+				<a href="#viewSummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
