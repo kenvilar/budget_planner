@@ -97,6 +97,39 @@
  
 
 			}
+			
+			function viewSummary() {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				html = '';
+ 				$('#viewSummaryPage').html('');
+ 				
+ 				var currentBudgetId = $('#currentBudgetID').val();
+ 				
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+      						html = html + '<table border="1" style="width:100%">';
+      						html += '<tr><th>Description</th><th>Category</th><th>Amount</th></tr>';
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          					
+    					        html += '<tr>';
+    					        html += '<a  class=""><td>' +row.Description+ '</td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
+    					        html += '</tr>';
+        						}
+        					html += '</table>';
+        					$('#viewSummaryPage').append(html);
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+			}
 
 
 
