@@ -177,7 +177,8 @@
 				
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
-								
+				
+				window.alert("Expense added successfully!");
 				return;
 			}
 			
@@ -369,6 +370,8 @@
 			</div>
 		</div>
 
+		<div data-role="page" id="viewSummaryPage"></div>
+		
 		<div data-role="page" id="addExpensePage" >
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
@@ -420,7 +423,9 @@
 				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</script>
 
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
+				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
+				<br>
+				<a href="#viewSummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
