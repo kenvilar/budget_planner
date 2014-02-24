@@ -12,9 +12,9 @@
 		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" src="jquery-2.1.0.min.js"></script> -->
 
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.css">
-		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.4.1/jquery.mobile-1.4.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1/jquery.mobile-1.4.1.min.css">
+		<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="jquery.mobile-1.4.1/jquery.mobile-1.4.1.min.js"></script>
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">	
 
@@ -55,16 +55,15 @@
   				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
 
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date DATE NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date Date NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
 				db.transaction(function(tx){
 
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date DATE NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
+ 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
 
  				ListDBValues();
- 				GetName();
- 				GetTarget();
+ 				GetName(id);
 			}
 
 			function ListDBValues() {
@@ -85,7 +84,7 @@
           						var row = result.rows.item(i);
           					
     					        html += '<li>';
-    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +')>' + row.Name+ ' , ' + row.Target + '</a>';
+    					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn ui-corner-all ui-shadow ui-btn-icon-right ui-icon-carat-r">'+row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
         					html += '</ul>';
@@ -109,6 +108,13 @@
 				return;
 			}
 
+			function clearAddExpenseField() {
+				$('#txDescription').val('');
+				$('#txAmount').val('');
+				$('#txOccurence').val('');
+				return;
+			}
+
 			function AddValueToDB() {
 				if (!window.openDatabase) {
 					alert('Databases are not supported in this browser.');
@@ -123,43 +129,75 @@
 				});
 
 				ListDBValues();
-				GetName();
-				GetTarget();
+				GetName(id);
 				return false;
 			}
 
 
 			function AddExpense() {
-				if (!window.openDatabase) {
-					alert('Databases are not supported in this browser.');
-					return;
-				}
+				
 
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
 
+				
+				GetName($('#currentBudgetID').val());
+				$.mobile.changePage("index.html#editBudget");
 								
-				return false;
+				return;
 			}
 			
+
+			function getDaysBetween(date1, date2) {
+  					//Get 1 day in milliseconds
+  					var one_day=1000*60*60*24;
+
+  					// Convert both dates to milliseconds
+ 					var date1_ms = date1.getTime();
+  					var date2_ms = date2.getTime();
+
+  					// Calculate the difference in milliseconds
+  					var difference_ms = date2_ms - date1_ms;
+    
+  					// Convert back to days and return
+  					return Math.round(difference_ms/one_day); 
+			}
+
 			function GetName(id) {
 				$('#currentBudgetID').val(id);
  				if (!window.openDatabase) {
   					alert('Databases are not supported in this browser.');
-  				return;
+  					return;
  				}
  
  				$('#MyTarget').html('');
  				$('#MyName').html('');
- 
+				$('#dailyBudget').html('');
+				$('#monthlyBudget').html('');
+ 				$('#MyMoney').html('');
+
+				var budgetDate;
+				var totalMoney;
+				var targetSavings;
+				var totalExpense = 0;
+				var differences;
+				var lastDayOfBudgetMonth;
+				var monthlyBudgetLeft;
+				var dailyBudgetLeft;
+
 				db.transaction(function(transaction) {
-   					transaction.executeSql('SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id],
+   					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB WHERE BudgetId = ?;', [id],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
+          						$('#MyMoney').append(row.Money);
+							budgetDate = new Date(row.Date);
+							lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
+							totalMoney = row.Money;
+							targetSavings = row.Target;
           						$('#MyTarget').append(row.Target);
           						$('#Myid').append(row.BudgetId);
           						$('#Myid').val(row.BudgetId);
@@ -167,7 +205,27 @@
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
- 
+
+					
+					db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM Expense WHERE Budget = ?;', [id],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+						
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          							totalExpense = totalExpense + (row.Amount * row.Occurence);
+        						}
+						differences = getDaysBetween(budgetDate,lastDayOfBudgetMonth) + 1;
+						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
+						dailyBudgetLeft = monthlyBudgetLeft / differences;
+						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
+						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 					
+					
  					return;
  
 
@@ -180,17 +238,24 @@
 					return;
 				}
 
-				confirm("Are you sure you want to delete?")
-				db.transaction(function(transaction) {
-					transaction.executeSql(
-							'DELETE FROM BudgetDB WHERE BudgetId = ?;',
-							[id],
-							nullHandler, errorHandler);
-				});
+				if(confirm("Are you sure you want to delete?")) {
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'DELETE FROM BudgetDB WHERE BudgetId = ?;',
+								[id],
+								nullHandler, errorHandler);
+					});
+
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'DELETE FROM Expense WHERE Budget = ?;',
+								[id],
+								nullHandler, errorHandler);
+					});
+				}
 
 				ListDBValues();
-				GetName();
-				GetTarget();
+				GetName(id);
 				return false;
 			}
 
@@ -212,7 +277,6 @@
 				);
 				ListDBValues();
 				GetName(id);
-				GetTarget();
 				return false;
 			}
 
@@ -224,6 +288,17 @@
 
     <body onload="onBodyLoad()">
     
+    	<div id="fb-root"></div>
+		<script>
+			(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) return;
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=170509146458314";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+    
    		<div data-role="page" id="mainpage" onload="onBodyLoad()">
    		
 			<div data-role="header">
@@ -232,7 +307,7 @@
 
 			<div data-role="content">
   				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
-  				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b">
+  				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
 						<input type="hidden" id="currentBudgetID">
 						<div id="Budgets"></div>
@@ -263,6 +338,7 @@
 
 		<div data-role="page" id="addExpensePage" >
 			<div data-role="header">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
@@ -273,10 +349,10 @@
       						<option value="Food">Food / Beverages</option>
       						<option value="Transportation">Transportation</option>
       						<option value="Education">Education</option>
-						<option value="Clothing">Clothing</option>
-						<option value="Personal">Personal</option>
-						<option value="Home">Home</option>
-						<option value="Other">Other</option>
+							<option value="Clothing">Clothing</option>
+							<option value="Personal">Personal</option>
+							<option value="Home">Home</option>
+							<option value="Other">Other</option>
     					</select>
   				</fieldset>
 				<input type="text" placeholder="Description" id="txDescription">
@@ -287,10 +363,10 @@
 				</script>				
 								
 				
-				<a href="#editBudget" class="ui-btn" onClick="AddExpense()">Add Expense</a>
+				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
 				<br>
 				
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 				
 			</div>
 		</div>
@@ -300,21 +376,22 @@
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content">
+				<div class="fb-share-button" data-href="https://www.facebook.com/" data-type="button"></div><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
-				<b>Target: <small id="MyTarget"></small></b>
+				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
+				<b>Target: ₱<small id="MyTarget"></small></b>
 				<br>
 				<br>
-				<script>
-					document.write('<h3>Remaining Daily Budget: </h3>');
-					document.write('<br>');
-					document.write('<h3>Remaining Monthly Budget: </h3>');
+				<h3>Remaining Daily Budget: </h3><h2 id="dailyBudget"></h2>
+				<br>
+				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</script>
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" ">Add Expense</a>
+
+				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
 			</div>
-
 			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
 				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
@@ -327,10 +404,12 @@
 				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
 				            <input type="number" name="budget_target" pattern="[0-9]*" id="trgt" value="" data-theme="a" placeholder="target">
 				            <a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
+							<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-arrow-l">Cancel</a>	
 				        </div>
 				    </form>
 				</div>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
+				<!-- <a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a> -->
 			</div>
 		</div>
 
