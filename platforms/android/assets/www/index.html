@@ -227,6 +227,7 @@
 				var lastDayOfBudgetMonth;
 				var monthlyBudgetLeft;
 				var dailyBudgetLeft;
+				var dateToday = new Date();
 
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB WHERE BudgetId = ?;', [id],
@@ -258,9 +259,10 @@
           						var row = result.rows.item(i);
           							totalExpense = totalExpense + (row.Amount * row.Occurence);
         						}
-						differences = getDaysBetween(budgetDate,lastDayOfBudgetMonth) + 1;
+						differences = getDaysBetween(dateToday,lastDayOfBudgetMonth) + 1;
 						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
+						$('#DaysRemaining').append(differences);
 						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
 						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
       						}
@@ -445,7 +447,8 @@
 				<div class="fb-share-button" data-href="https://www.facebook.com/" data-type="button"></div><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
-				<b>Target: ₱<small id="MyTarget"></small></b>
+				<b>Target: ₱<small id="MyTarget"></small></b><br>
+				<b>Days remaining: <small id="DaysRemaining"></small></b>
 				<br>
 				<br>
 				<h3>Remaining Daily Budget: </h3><h2 id="dailyBudget"></h2>
