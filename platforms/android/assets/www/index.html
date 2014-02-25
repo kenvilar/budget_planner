@@ -113,16 +113,38 @@
    					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
+      						html = html + '<center><h2>Summary</h2><center>';
       						html = html + '<table border="1" style="width:100%">';
-      						html += '<tr><th>Description</th><th>Category</th><th>Amount</th></tr>';
+      						html += '<tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>';
+							var totalExpenses = 0;
+							
+							var month=new Array();
+							month[0]="Jan";
+							month[1]="Feb";
+							month[2]="Mar";
+							month[3]="Apr";
+							month[4]="May";
+							month[5]="Jun";
+							month[6]="Jul";
+							month[7]="Aug";
+							month[8]="Sep";
+							month[9]="Oct";
+							month[10]="Nov";
+							month[11]="Dec";
+							
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          					
+								
+								var myDate = new Date(row.Date);
+								//var newDate = formatDate(myDate,"MMM d, y");
+								totalExpenses += row.Amount;
     					        html += '<tr>';
-    					        html += '<a  class=""><td>' +row.Description+ '</td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
+    					        html += '<a><td>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</td> <td>'+ row.Description +' </td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
     					        html += '</tr>';
         						}
         					html += '</table>';
+							html += '<h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3>';
+        					html +=	'<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>';
         					$('#viewSummaryPage').append(html);
       						}
      					},errorHandler);
@@ -130,6 +152,7 @@
  
  					return;
 			}
+
 
 
 
