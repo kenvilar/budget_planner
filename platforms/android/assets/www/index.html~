@@ -23,6 +23,9 @@
 					$('#txTarget').val($('#txMoney').val()/2);
 					$('#txTarget').attr('max',$('#txMoney').val());
 				});
+				
+				
+
 			});
 
 			var db;
@@ -97,6 +100,39 @@
  
 
 			}
+			
+			function viewSummary() {
+ 				if (!window.openDatabase) {
+  					alert('Databases are not supported in this browser.');
+  				return;
+ 				}
+ 
+ 				html = '';
+ 				$('#viewSummaryPage').html('');
+ 				
+ 				var currentBudgetId = $('#currentBudgetID').val();
+ 				
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+      						html = html + '<table border="1" style="width:100%">';
+      						html += '<tr><th>Description</th><th>Category</th><th>Amount</th></tr>';
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          					
+    					        html += '<tr>';
+    					        html += '<a  class=""><td>' +row.Description+ '</td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
+    					        html += '</tr>';
+        						}
+        					html += '</table>';
+        					$('#viewSummaryPage').append(html);
+      						}
+     					},errorHandler);
+ 					},errorHandler,nullHandler);
+ 
+ 					return;
+			}
 
 
 
@@ -107,6 +143,15 @@
 
 				return;
 			}
+			
+			<!---------------------------------->
+			function connectToFacebook(){
+				$('#txFbUsername').val('');
+				$('#txFbPassword').val('');
+				
+				return;
+			}
+			<!---------------------------------->
 
 			function clearAddExpenseField() {
 				$('#txDescription').val('');
@@ -116,11 +161,7 @@
 			}
 
 			function AddValueToDB() {
-				if (!window.openDatabase) {
-					alert('Databases are not supported in this browser.');
-					return;
-				}
-
+				
 				db.transaction(function(transaction) {
 					transaction.executeSql(
 							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
@@ -130,13 +171,13 @@
 
 				ListDBValues();
 				GetName(id);
+				$.mobile.changePage("index.html#mainpage");
 				return false;
 			}
 
 
 			function AddExpense() {
 				
-
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
@@ -144,7 +185,8 @@
 				
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
-								
+				
+				window.alert("Expense added successfully!");
 				return;
 			}
 			
@@ -185,6 +227,7 @@
 				var lastDayOfBudgetMonth;
 				var monthlyBudgetLeft;
 				var dailyBudgetLeft;
+				var dateToday = new Date();
 
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB WHERE BudgetId = ?;', [id],
@@ -216,9 +259,10 @@
           						var row = result.rows.item(i);
           							totalExpense = totalExpense + (row.Amount * row.Occurence);
         						}
-						differences = getDaysBetween(budgetDate,lastDayOfBudgetMonth) + 1;
+						differences = getDaysBetween(dateToday,lastDayOfBudgetMonth) + 1;
 						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
+						$('#DaysRemaining').append(differences);
 						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
 						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
       						}
@@ -314,7 +358,29 @@
 					
 				</div>
   			</div>
+  			
+  			<!-------------FACEBOOK-------------------->
+  			<div data-role ="content">
+  				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
+  				Share to Facebook</a>
+  			</div>
+  			<!------------------------------------------>
+  			
 		</div>
+		
+		<!-------------------------FACEBOOK---------------------------------->
+		<div data-role="page" id="facebookConnect">
+			<div data-role="header">
+				<h1>Login</h1>
+			</div>
+			<div data-role="content">
+			<input type="text" placeholder="Username" id="txFbUsername">
+			<input type="text" placeholder="Password" id="txFbPasword">
+			<a href="#mainpage" class="ui-btn" onclick="">Login</a> 
+			<a href="#mainpage" class="ui-btn">Back</a>
+			</div>
+		</div>
+		<!------------------------------------------------------------------->
 
 		<div data-role="page" id="addBudget" >
 			<div data-role="header">
@@ -329,13 +395,15 @@
 				<script>
 					document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
 				</script>
-				<a href="#mainpage" class="ui-btn" onClick="AddValueToDB()">Add Budget</a>
+				<a href="#mainpage" class="ui-btn" id="AddBudgetLink" onClick="AddValueToDB()">Add Budget</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
 			</div>
 		</div>
 
+		<div data-role="page" id="viewSummaryPage"></div>
+		
 		<div data-role="page" id="addExpensePage" >
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
@@ -379,7 +447,8 @@
 				<div class="fb-share-button" data-href="https://www.facebook.com/" data-type="button"></div><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
-				<b>Target: ₱<small id="MyTarget"></small></b>
+				<b>Target: ₱<small id="MyTarget"></small></b><br>
+				<b>Days remaining: <small id="DaysRemaining"></small></b>
 				<br>
 				<br>
 				<h3>Remaining Daily Budget: </h3><h2 id="dailyBudget"></h2>
@@ -387,7 +456,9 @@
 				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</script>
 
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
+				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
+				<br>
+				<a href="#viewSummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 
