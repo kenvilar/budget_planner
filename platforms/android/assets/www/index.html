@@ -18,15 +18,53 @@
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
 		<script type="text/javascript" charset="utf-8">	
 
-			$(document).ready(function () {
+			$(document).ready(function () {				
+				
 				$('#txMoney').keyup(function () {
 					$('#txTarget').val($('#txMoney').val()/2);
 					$('#txTarget').attr('max',$('#txMoney').val());
 				});
 				
-				
+				$('#txAmount').keyup(function() {
+					$('#total').val($('#txAmount').val() * $('#txOccurence').val());			
+				});
 
+				$('#txOccurence').hide();
+				
+	
+				$('#txFrequency').change(function () {
+					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
+    					if($('#txFrequency').val() == "4"){
+						window.alert("4");
+						$('#txOccurence').val('4');
+						$('#txOccurence').hide();			
+					}
+					else if($('#txFrequency').val() == "1"){
+						window.alert("1");
+						$('#txOccurence').val('1');
+						$('#txOccurence').hide();				
+					}
+					else{
+						window.alert("other");
+						$('#txOccurence').val('');
+						$('#txOccurence').show();				
+					}
+  				}).change();
+				
+				$("#addExpensePage").on("tap",function(){
+  					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
+				});
+
+				$("#addExpensePage").mousemove(function( event ) {
+  					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
+				});
+				
+				
 			});
+			
+				
+			
+			
 
 			var db;
 			var shortName = 'BudgetDB';
@@ -179,7 +217,7 @@
 			function clearAddExpenseField() {
 				$('#txDescription').val('');
 				$('#txAmount').val('');
-				$('#txOccurence').val('');
+				//$('#txOccurence').val('');
 				return;
 			}
 
@@ -263,6 +301,7 @@
 				return;
 			}
 			
+			
 
 			function getDaysBetween(date1, date2) {
   					//Get 1 day in milliseconds
@@ -291,7 +330,7 @@
 				$('#dailyBudget').html('');
 				$('#monthlyBudget').html('');
  				$('#MyMoney').html('');
-
+				$('#recommendedExpense').html('');
 				var budgetDate;
 				var totalMoney;
 				var targetSavings;
@@ -335,7 +374,7 @@
 						differences = getDaysBetween(dateToday,lastDayOfBudgetMonth) + 1;
 						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
-						$('#DaysRemaining').append(differences);
+						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ dailyBudgetLeft +'</b>');
 						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
 						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
       						}
@@ -497,7 +536,12 @@
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
+
 				<p>This is where you will add a new expense</p>
+				
+
+				<p id="recommendedExpense"></p>
+
 				<form name="addExpenseForm" method="post">
 				<fieldset class="ui-field-contain">
     					<label for="category">Select Category</label>
@@ -513,11 +557,20 @@
   				</fieldset>
 				<input type="text" placeholder="Description" id="txDescription">
 				<input type="text" placeholder="Amount" id="txAmount">
-				<input type="text" placeholder="Number of Occurence per month" id="txOccurence">
+				<fieldset class="ui-field-contain">
+    					<label for="occurence">Select frequency</label>
+    						<select name="occurence" id="txFrequency">
+      							<option selected="selected" value="4">Weekly</option>
+      							<option value="1">Monthly</option>
+      							<option value="Other">Other</option>
+   						</select>
+  					</fieldset> 
+				<input type="text" placeholder="Number of Occurence per month" id="txOccurence" value="4">
 				<script>
 					document.write('<input type="hidden" id="txDate" value="'+ new Date() +'">');
-				</script>				
-								
+				</script>	
+				<label for="total">Total</label>			
+				<input name="total" type="text" id="total" value="0" readonly>
 				
 				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
 				</form>
@@ -537,11 +590,10 @@
 				<div class="fb-share-button" data-href="https://github.com/kenvilar/budget_planner" data-type="button"></div><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
-				<b>Target: ₱<small id="MyTarget"></small></b><br>
-				<b>Days remaining: <small id="DaysRemaining"></small></b>
+				<b>Target: ₱<small id="MyTarget"></small></b>
 				<br>
 				<br>
-				<h3>Remaining Daily Budget: </h3><h2 id="dailyBudget"></h2>
+				<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
 				<br>
 				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				
