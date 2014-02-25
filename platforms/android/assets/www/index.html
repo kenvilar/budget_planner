@@ -194,19 +194,19 @@
 				
 				if (bName==null || bName=="") {
 					alert("Please enter a budget name!");
-					<!-- window.location.assign("#addBudget") -->
 					window.location.reload(true);
 					return false;
 				} else if (bMoney==null || bMoney=="") {
-					alert("Please enter a budget money!");
+					alert("Please enter a budget income!");
 					window.location.reload(true);
 					return false;
 				}else if (bMoney<=0) {
-					alert("Budget money must be greater than zero!");
+					alert("Budget income must be greater than zero!");
 					window.location.reload(true);
 					return false;
 				}else if (isNaN(bMoney)) {
-					alert("Budget money must be an integer!");
+
+					alert("Budget income must be an integer!");
 					window.location.reload(true);
 					return false;
 				}
@@ -378,18 +378,29 @@
 
 			function updateBudget(){
 				var id = $('#Myid').val();
+				var bdgtnm = document.getElementById("bdgtnm");
+				var trgt = document.getElementById("trgt");
 				db.transaction(
 				    function (transaction) {
-				    	if( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
+						if( ($('#bdgtnm').val() == null) || ($('#bdgtnm').val() == "") ) {
+							alert("Please enter a budget name!");
+							trgt.value = " ";
+							return false;
+						}else if ( ($('#trgt').val() == null) || ($('#trgt').val() == "")  || !isNaN('trgt') ) {
+							alert("Budget target is required and must be an integer!");
+							bdgtnm.value = " ";
+							trgt.value = " ";
+							return false;
+						}else if ( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
 				    		var bdgtnm = $('#bdgtnm').val();
 				    		var trgt = $('#trgt').val();
+							transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
 				    	} else {
-				    		var bdgtnm = 'none';
-				    		var trgt = 'none';
+				    		return false;
 				    	}
-					
-
+			
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
+						
 				    }
 				);
 				ListDBValues();
