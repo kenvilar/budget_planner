@@ -224,33 +224,9 @@
 					return;
 				}
 
-				var bName = document.forms["addForm"]["txName"].value;
-				var bMoney = document.forms["addForm"]["txMoney"].value;
-				
-				if (bName==null || bName=="") {
-					alert("Please enter a budget name!");
-					window.location.reload(true);
-					return false;
-				} else if (bMoney==null || bMoney=="") {
-					alert("Please enter a budget income!");
-					window.location.reload(true);
-					return false;
-				}else if (bMoney<=0) {
-					alert("Budget income must be greater than zero!");
-					window.location.reload(true);
-					return false;
-				}else if (isNaN(bMoney)) {
-
-					alert("Budget income must be an integer!");
-					window.location.reload(true);
-					return false;
-				}
-				else 
-					db.transaction(function(transaction) {
-					transaction.executeSql(
-							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
-							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()],
-							nullHandler, errorHandler);
+				db.transaction(function(transaction) {
+				transaction.executeSql(
+					'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()], nullHandler, errorHandler);
 				});
 					alert("Added successfully!");
 					window.history.back()
@@ -263,34 +239,10 @@
 
 			function AddExpense() {
 				
-				
-				var eDescription = document.forms["addExpenseForm"]["txDescription"].value;
-				var eAmount = document.forms["addExpenseForm"]["txAmount"].value;
-				
-				if (eDescription==null || eDescription=="") {
-					alert("Please enter a description!");
-					<!-- window.location.assign("#addBudget") -->
-					window.location.reload(true);
-					return false;
-				} else if (eAmount==null || eAmount=="") {
-					alert("Please enter amount.");
-					window.location.reload(true);
-					return false;
-				}else if (eAmount<=0) {
-					alert("Expense amount must be greater than zero!");
-					window.location.reload(true);
-					return false;
-				}else if (isNaN(eAmount)) {
-					alert("Amount money must be an integer!");
-					window.location.reload(true);
-					return false;
-				}
-				else{ 
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
 
-				}
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
 				
@@ -372,6 +324,7 @@
 						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
 						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ dailyBudgetLeft +'</b>');
+						$('#hiddenRecommendedExpense').val(dailyBudgetLeft);
 						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
 						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
       						}
@@ -447,6 +400,59 @@
 						window.alert("Please type in a Valid number.");
 						$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
+						return;
+					}
+				}
+			}
+			
+			function checkAddExpenseInputs() {
+				if($.trim($('#txDescription').val()) == 0){
+					window.alert("Please type in the Description of your expense");
+					$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addExpensePage");
+					return;
+				}
+				else{
+					if($.isNumeric($.trim($('#txDescription').val()))){
+						window.alert("Please type in a valid Description of your expense");
+						$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addExpensePage");
+						return;
+					}
+				}
+				
+				var amount = $('#txAmount').val();
+				if($.trim(amount) == 0){
+					window.alert("Please type in the Amount of your expense");
+					$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addExpensePage");
+					return;
+				}
+				else{
+					if($.isNumeric($.trim(amount))){
+						if(new Number($.trim(amount)) < 0){
+							window.alert("The amount you typed in is negative.");
+							$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addExpensePage");
+							return;
+						}
+						else{
+							if((new Number($('#total').val())) > (new Number($('#hiddenRecommendedExpense').val()))){
+								window.alert("The amount you are trying to spend is bigger than the recommended amount of daily expense.");
+								$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+								$.mobile.changePage("index.html#addExpensePage");
+								return;
+							}
+							else{
+								AddExpense();
+								return;
+							}
+						}
+					}
+					else{
+						window.alert("Please type a valid Amount of your expense");
+						$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addExpensePage");
 						return;
 					}
 				}
@@ -606,6 +612,7 @@
 				
 
 				<p id="recommendedExpense"></p>
+				<input type="hidden" id="hiddenRecommendedExpense" value="0">
 
 				<form name="addExpenseForm" method="post">
 				<fieldset class="ui-field-contain">
@@ -636,8 +643,7 @@
 				</script>	
 				<label for="total">Total</label>			
 				<input name="total" type="text" id="total" value="0" readonly>
-				
-				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
+				<a class="ui-btn" onClick="checkAddExpenseInputs()">Add Expense</a>
 				</form>
 				<br>
 				
