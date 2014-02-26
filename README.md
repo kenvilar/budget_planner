@@ -13,15 +13,13 @@ To help users who want to save up their money and keep track of their progress.
 To create a user-friendly budget planning application for users who want to manage their expenses.
 
 # FEATURE LIST: #
-* Register User
 * Add Budget
+* Add Expense
 * Edit Budget
 * Delete Budget
-* View Expenses
-* Add Expense
 * Delete Expense
+* View Expense (Summary)
 * Share on Facebook
-* Summary
 
 ---
 

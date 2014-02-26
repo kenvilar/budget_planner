@@ -749,6 +749,7 @@ C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images\icons-svg\user-white.svg \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images\icons-svg\video-black.svg \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images\icons-svg\video-white.svg \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\fb.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\index.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\jquery-1.10.2.min.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\jquery-2.1.0.js \
