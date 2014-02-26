@@ -6,7 +6,7 @@
         <meta charset="utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         
         <!-- <link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1.min.css">
 		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
@@ -71,11 +71,11 @@
 
 			function errorHandler(transaction, error) {
    				alert('Error: ' + error.message + ' code: ' + error.code);
-				}
+			}
 
 			function successCallBack() {
    				alert("DEBUGGING: success");
- 				}
+ 			}
 
 			function nullHandler(){};
 
@@ -99,7 +99,6 @@
 
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
-
  				ListDBValues();
  				GetName(id);
 			}
@@ -132,8 +131,6 @@
  					},errorHandler,nullHandler);
  
  					return;
- 
-
 			}
 			
 			function viewSummary() {
@@ -151,7 +148,7 @@
    					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						html = html + '<center><h2>Summary</h2><center>';
+      						<!-- html = html + '<center><h2>Summary</h2><center>'; -->
       						html = html + '<table border="1" style="width:100%">';
       						html += '<tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>';
 							var totalExpenses = 0;
@@ -181,7 +178,7 @@
     					        html += '</tr>';
         						}
         					html += '</table>';
-							html += '<h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3>';
+							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
         					html +=	'<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>';
         					$('#viewSummaryPage').append(html);
       						}
@@ -378,10 +375,7 @@
      					},errorHandler);
  					},errorHandler,nullHandler);
  					
-					
  					return;
- 
-
 			}
 
 			function checkAddBudgetInputs() {
@@ -473,11 +467,21 @@
 								[id],
 								nullHandler, errorHandler);
 					});
-				}
-
-				ListDBValues();
-				GetName(id);
-				return false;
+					
+					ListDBValues();
+					GetName(id);
+					
+					return false;
+				}else 
+					var id = $('#Myid').val();
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
+					});
+					window.location.assign("index.html#editBudget");
+					ListDBValues();
+					GetName(id);
+					return;
 			}
 
 			function updateBudget(){
@@ -491,7 +495,7 @@
 							trgt.value = " ";
 							return false;
 						}else if ( ($('#trgt').val() == null) || ($('#trgt').val() == "")  || !isNaN('trgt') ) {
-							alert("Budget target is required and must be an integer!");
+							alert("Please input your valid budget target!");
 							bdgtnm.value = " ";
 							trgt.value = " ";
 							return false;
@@ -499,12 +503,12 @@
 				    		var bdgtnm = $('#bdgtnm').val();
 				    		var trgt = $('#trgt').val();
 							transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
+							window.alert("Budget updated successfully!");
 				    	} else {
 				    		return false;
 				    	}
 			
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
-						
 				    }
 				);
 				ListDBValues();
@@ -516,7 +520,7 @@
 		</script>
 
 
-        <title>Budget Planner</title>
+	<title>Budget Planner</title>
     </head>
 
     <body onload="onBodyLoad()">
@@ -533,28 +537,23 @@
 		</script>
     
    		<div data-role="page" id="mainpage" onload="onBodyLoad()">
-   		
 			<div data-role="header">
     			<h1>Home</h1>
   			</div>
-
 			<div data-role="content">
   				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
 						<input type="hidden" id="currentBudgetID">
 						<div id="Budgets"></div>
-					
 				</div>
   			</div>
-  			
   			<!-------------FACEBOOK-------------------->
   			<div data-role ="content">
   				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
   				Share to Facebook</a>
   			</div>
   			<!------------------------------------------>
-  			
 		</div>
 		
 		<!-------------------------FACEBOOK---------------------------------->
@@ -589,11 +588,17 @@
 				</form>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-
 			</div>
 		</div>
 
-		<div data-role="page" id="viewSummaryPage"></div>
+		<div data-role="page" id="SummaryPage">
+			<div data-role="header">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
+				<h1>Summary</h1>
+			</div>
+			<br>
+			<div id="viewSummaryPage"></div>
+		</div>
 		
 		<div data-role="page" id="addExpensePage" >
 			<div data-role="header">
@@ -601,12 +606,7 @@
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
-
-				<p>This is where you will add a new expense</p>
-				
-
 				<p id="recommendedExpense"></p>
-
 				<form name="addExpenseForm" method="post">
 				<fieldset class="ui-field-contain">
     					<label for="category">Select Category</label>
@@ -639,15 +639,12 @@
 				
 				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
 				</form>
-				<br>
-				
 				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-				
 			</div>
 		</div>
 		
 		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget">
-			<div data-role="header" data-position="fixed">
+			<div data-role="header">
 				<h1>Edit Budget</h1>
 				<a href="#nav-panel" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-bars"><p></p></a>
 			</div>
@@ -658,18 +655,15 @@
 				<b>Target: ₱<small id="MyTarget"></small></b>
 				<br>
 				<br>
-				<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
-				<br>
-				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
-				
+				<center>
+					<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
+					<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
+				</center>
 				<div data-demo-html="#editBudget"></div>
-
+				<!--  -->
 				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
-				<br>
-				<a href="#viewSummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
-				<br>
+				<a href="#SummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-
 			</div>
 			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
 				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
@@ -697,7 +691,6 @@
 						<li><a href="#panel-fixed-page2">Ajax Navigation</a></li>
 				</ul>
 			</div>
-			
 		</div>
 
    
