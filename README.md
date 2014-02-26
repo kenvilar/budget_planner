@@ -31,6 +31,11 @@ To create a user-friendly budget planning application for users who want to mana
 - [Racsa, Jemuel](https://github.com/jemuelracsa)
 - [Vilar, Ken](https://github.com/kenvilar)
 
+###FURTHER READING###
+- [Apache Cordova] (https://cordova.apache.org)
+- [Node.js] (http://nodejs.org/)
+- [Android SDK] (http://developer.android.com/sdk/index.html)
+
 [Top](#top)
 
 ---

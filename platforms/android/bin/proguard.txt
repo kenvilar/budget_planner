@@ -1,0 +1,9 @@
+# view AndroidManifest.xml #generated:24
+-keep class mobile.budget.planner.BudgetPlanner { <init>(...); }
+
+# view AndroidManifest.xml #generated:38
+-keep class mobile.budget.planner.EditBudget { <init>(...); }
+
+# view AndroidManifest.xml #generated:34
+-keep class mobile.budget.planner.ShowBudget { <init>(...); }
+

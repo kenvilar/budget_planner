@@ -1,0 +1,22 @@
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes.dex : \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\db\DatabaseHandler.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\db\DatabaseLayer.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\model\BudgetModel.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\BudgetPlanner$1.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\BudgetPlanner$2.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\BudgetPlanner.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\BuildConfig.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\EditBudget$1.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\EditBudget$2.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\EditBudget$3.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\EditBudget$4.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\EditBudget.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R$attr.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R$drawable.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R$id.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R$layout.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R$string.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R$xml.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\R.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\classes\mobile\budget\planner\ShowBudget.class \
+C:\Users\Ken\workspace\budget_planner\platforms\android\bin\dexedLibs\cordova-3.2.0-204ffbdcf8155daacf083a645f28f248.jar \
