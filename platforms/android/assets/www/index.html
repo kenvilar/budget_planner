@@ -35,17 +35,14 @@
 				$('#txFrequency').change(function () {
 					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
     					if($('#txFrequency').val() == "4"){
-						window.alert("4");
 						$('#txOccurence').val('4');
 						$('#txOccurence').hide();			
 					}
 					else if($('#txFrequency').val() == "1"){
-						window.alert("1");
 						$('#txOccurence').val('1');
 						$('#txOccurence').hide();				
 					}
 					else{
-						window.alert("other");
 						$('#txOccurence').val('');
 						$('#txOccurence').show();				
 					}
@@ -387,6 +384,74 @@
 
 			}
 
+			function checkAddBudgetInputs() {
+				var value = $.trim($("#txName").val());
+				if(value == 0){
+					window.alert("Please type in a Budget Name.");
+					$("#txName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addBudget");
+					return;
+				}
+				
+				value = $("#txMoney").val();
+				if($.trim(value) == 0){
+					window.alert("Please type in your income.");
+					$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addBudget");
+					return;
+				}
+				else{
+					if($.isNumeric(value)){
+						if((new Number(value)) < 0){
+							window.alert("Please type in a positive income.");
+							$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addBudget");
+							return;
+						}						
+					}
+					else{
+						window.alert("Please type in a Valid number.");
+						$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addBudget");
+						return;
+					}
+				}
+				
+				var target = $("#txTarget").val();
+				if($.trim(target) == 0){
+					window.alert("Please type in your Target saving.");
+					$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addBudget");
+					return;
+				}
+				else{
+					if($.isNumeric(target)){
+						if((new Number(target)) < 0){
+							window.alert("Please type in a positive Target saving.");
+							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addBudget");
+							return;
+						}
+						else if((new Number(target)) == value){
+							window.alert("The Target saving is the same with your income.");
+							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addBudget");
+							return;
+						}
+						else{
+							AddValueToDB();
+							return;
+						}
+					}
+					else{
+						window.alert("Please type in a Valid number.");
+						$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addBudget");
+						return;
+					}
+				}
+			}
+			
 			function DeleteBudget() {
 				var id = $('#Myid').val();
 				if (!window.openDatabase) {
@@ -520,7 +585,7 @@
 					<script>
 						document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
 					</script>
-					<a href="#addBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="AddValueToDB()">Add Budget</a>
+					<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="checkAddBudgetInputs()">Add Budget</a>
 				</form>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
