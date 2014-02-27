@@ -24,7 +24,10 @@ C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\css\index.css \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\css\jquery.mobile-1.4.1.min.css \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\img\bg.jpg \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\img\logo.png \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\img\Originals \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\img\Originals\bg.jpg \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\demos \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\jquery.mobile-1.4.1.css \

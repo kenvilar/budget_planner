@@ -149,8 +149,8 @@
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
       						<!-- html = html + '<center><h2>Summary</h2><center>'; -->
-      						html = html + '<table border="1" style="width:100%">';
-      						html += '<tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>';
+      						html = html + '<table style="width:100%" data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">';
+      						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead>';
 							var totalExpenses = 0;
 							
 							var month=new Array();
@@ -173,9 +173,9 @@
 								var myDate = new Date(row.Date);
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
-    					        html += '<tr>';
-    					        html += '<a><td>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</td> <td>'+ row.Description +' </td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
-    					        html += '</tr>';
+    					        html += '<tbody><tr>';
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td></a>';
+    					        html += '</tr></tbody>';
         						}
         					html += '</table>';
 							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
@@ -575,7 +575,10 @@
 			}(document, 'script', 'facebook-jssdk'));
 		</script>
     
-   		<div data-role="page" id="mainpage" onload="onBodyLoad()">
+   		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
+																													   background-attachment: fixed; 
+																													   background-repeat: repeat; 
+																													   background-size: 100% 100%;">
 			<div data-role="header">
     			<h1>Home</h1>
   			</div>
@@ -588,10 +591,10 @@
 				</div>
   			</div>
   			<!-------------FACEBOOK-------------------->
-  			<div data-role ="content">
+  			<!-- <div data-role ="content">
   				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
   				Share to Facebook</a>
-  			</div>
+  			</div> -->
   			<!------------------------------------------>
 		</div>
 		
@@ -609,7 +612,10 @@
 		</div>
 		<!------------------------------------------------------------------->
 
-		<div data-role="page" id="addBudget" onload="onBodyLoad()">
+		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
+																													    background-attachment: fixed; 
+																													    background-repeat: repeat; 
+																													    background-size: 100% 100%;">
 			<div data-role="header">
 				<h1>Add Budget</h1>
 			</div>
@@ -630,7 +636,10 @@
 			</div>
 		</div>
 
-		<div data-role="page" id="SummaryPage">
+		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg'); 
+																						background-attachment: fixed; 
+																					    background-repeat: repeat; 
+																						background-size: 100% 100%;">
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
 				<h1>Summary</h1>
@@ -639,7 +648,10 @@
 			<div id="viewSummaryPage"></div>
 		</div>
 		
-		<div data-role="page" id="addExpensePage" >
+		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
+																							background-attachment: fixed; 
+																							background-repeat: repeat; 
+																							background-size: 100% 100%;">
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
 				<h1>Add Expense</h1>
@@ -683,13 +695,14 @@
 			</div>
 		</div>
 		
-		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget">
+		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget" style="background-image: url('img/bg.jpg'); 
+																																																																			   background-attachment: fixed; 
+																																																																			   background-repeat: repeat; 
+																																																																			   background-size: 100% 100%;">
 			<div data-role="header">
 				<h1>Edit Budget</h1>
-				<a href="#nav-panel" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-bars"><p></p></a>
 			</div>
 			<div role="main" class="ui-content jqm-content jqm-fullwidth">
-				<!-- <div class="fb-share-button" data-href="https://github.com/kenvilar/budget_planner" data-type="button"></div><br> -->
 				<a href="http://goo.gl/YHNnKD" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini">Share on Facebook</a><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
@@ -700,8 +713,6 @@
 					<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
 					<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
 				</center>
-				<div data-demo-html="#editBudget"></div>
-				<!--  -->
 				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
 				<a href="#SummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
@@ -723,14 +734,6 @@
 				    </form>
 				</div>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
-				<!-- <a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a> -->
-			</div>
-			<div data-role="panel" data-position-fixed="true" data-position="right" data-display="push" data-theme="b" id="nav-panel">
-				<ul data-role="listview">
-					<li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
-						<li><a href="#panel-fixed-page2">Accordion</a></li>
-						<li><a href="#panel-fixed-page2">Ajax Navigation</a></li>
-				</ul>
 			</div>
 		</div>
 
