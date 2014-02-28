@@ -33,6 +33,7 @@ To create a user-friendly budget planning application for users who want to mana
 - [Apache Cordova] (https://cordova.apache.org)
 - [Node.js] (http://nodejs.org/)
 - [Android SDK] (http://developer.android.com/sdk/index.html)
+- [Facebook SDK] (https://developers.facebook.com/?ref=pf)
 
 [Top](#top)
 
