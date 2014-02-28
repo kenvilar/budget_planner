@@ -2,9 +2,18 @@
 
 
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
+	<!-----head for facebook story read------->
+     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# profile: http://ogp.me/ns/profile#">
+ 		<meta property="fb:app_id" content="1382388548666955" /> 
+		<meta property="og:type"   content="profile" /> 
+	  	<meta property="og:url"    content="#moneySaved" /> <!----Put URL to the object here---->
+		<meta property="og:title"  content="I saved this much" /> <!---- Put title here ----->
+		<meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" /> 
+	        <meta charset="utf-8" />
+	        <meta name="format-detection" content="telephone=no" />
+	<!----------Kutob Diari----------->
+
+
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         
@@ -570,7 +579,7 @@
 			  var js, fjs = d.getElementsByTagName(s)[0];
 			  if (d.getElementById(id)) return;
 			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=553068804738984";
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1382388548666955";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 		</script>
@@ -579,6 +588,11 @@
 																													   background-attachment: fixed; 
 																													   background-repeat: repeat; 
 																													   background-size: 100% 100%;">
+
+		<div data-role="page" id="moneySaved">
+			I SAVED THIS MUCH USING MOBILE BUDGET PLANNER
+		</div>
+
 			<div data-role="header">
     			<h1>Home</h1>
   			</div>
