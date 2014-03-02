@@ -2,7 +2,7 @@
 
 
 <html>
-	<!-----Kung mag error sa inyo i-delete lang nang naa sa head------->
+	<!-----head for facebook story read------->
      <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# profile: http://ogp.me/ns/profile#">
  		<meta property="fb:app_id" content="1382388548666955" /> 
 		<meta property="og:type"   content="profile" /> 
@@ -10,7 +10,7 @@
 		<meta property="og:title"  content="I saved this much" /> <!---- Put title here ----->
 		<meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" /> 
 	        <meta charset="utf-8" />
-	        <meta name="format-detection" content="telephone=no" />
+	        <meta name="format-detection" content="telephone=no">
 	<!----------Kutob Diari----------->
 
 
@@ -42,20 +42,26 @@
 				
 	
 				$('#txFrequency').change(function () {
-					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
     					if($('#txFrequency').val() == "4"){
 						$('#txOccurence').val('4');
+						$('#total').val($('#txAmount').val() * $('#txOccurence').val());
 						$('#txOccurence').hide();			
 					}
 					else if($('#txFrequency').val() == "1"){
 						$('#txOccurence').val('1');
+						$('#total').val($('#txAmount').val() * $('#txOccurence').val());
 						$('#txOccurence').hide();				
 					}
 					else{
 						$('#txOccurence').val('');
-						$('#txOccurence').show();				
+						$('#txOccurence').show();
+						$('#total').val($('#txAmount').val() * $('#txOccurence').val());				
 					}
   				}).change();
+
+				$('#txOccurence').keyup(function() {
+					$('#total').val($('#txAmount').val() * $('#txOccurence').val());			
+				});
 				
 				$("#addExpensePage").on("tap",function(){
   					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
@@ -329,10 +335,10 @@
 						differences = getDaysBetween(dateToday,lastDayOfBudgetMonth) + 1;
 						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
-						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ dailyBudgetLeft +'</b>');
-						$('#hiddenRecommendedExpense').val(dailyBudgetLeft);
-						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
-						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
+						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ monthlyBudgetLeft.toFixed(2) +'</b>');
+						$('#hiddenRecommendedExpenseMonthly').val(monthlyBudgetLeft);
+						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft.toFixed(2) +'" readonly>');
+						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft.toFixed(2) +'" readonly>');
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
@@ -448,8 +454,8 @@
 							return;
 						}
 						else{
-							if((new Number($('#total').val())) > (new Number($('#hiddenRecommendedExpense').val()))){
-								window.alert("The amount you are trying to spend is bigger than the recommended amount of daily expense.");
+							if((new Number($('#total').val())) > (new Number($('#hiddenRecommendedExpenseMonthly').val()))){
+								window.alert("The amount you are trying to spend is bigger than the remaining budget and will obstruct you from getting the target savings.");
 								$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 								$.mobile.changePage("index.html#addExpensePage");
 								return;
@@ -672,7 +678,7 @@
 			</div>
 			<div data-role="content">
 				<p id="recommendedExpense"></p>
-				<input type="hidden" id="hiddenRecommendedExpense" value="0">
+				<input type="hidden" id="hiddenRecommendedExpenseMonthly" value="0">
 
 				<form name="addExpenseForm" method="post">
 				<fieldset class="ui-field-contain">
