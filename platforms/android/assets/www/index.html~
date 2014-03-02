@@ -35,17 +35,14 @@
 				$('#txFrequency').change(function () {
 					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
     					if($('#txFrequency').val() == "4"){
-						window.alert("4");
 						$('#txOccurence').val('4');
 						$('#txOccurence').hide();			
 					}
 					else if($('#txFrequency').val() == "1"){
-						window.alert("1");
 						$('#txOccurence').val('1');
 						$('#txOccurence').hide();				
 					}
 					else{
-						window.alert("other");
 						$('#txOccurence').val('');
 						$('#txOccurence').show();				
 					}
@@ -243,6 +240,7 @@
 					window.location.reload(true);
 					return false;
 				}else if (isNaN(bMoney)) {
+
 					alert("Budget income must be an integer!");
 					window.location.reload(true);
 					return false;
@@ -265,11 +263,34 @@
 
 			function AddExpense() {
 				
+				
+				var eDescription = document.forms["addExpenseForm"]["txDescription"].value;
+				var eAmount = document.forms["addExpenseForm"]["txAmount"].value;
+				
+				if (eDescription==null || eDescription=="") {
+					alert("Please enter a description!");
+					<!-- window.location.assign("#addBudget") -->
+					window.location.reload(true);
+					return false;
+				} else if (eAmount==null || eAmount=="") {
+					alert("Please enter amount.");
+					window.location.reload(true);
+					return false;
+				}else if (eAmount<=0) {
+					alert("Expense amount must be greater than zero!");
+					window.location.reload(true);
+					return false;
+				}else if (isNaN(eAmount)) {
+					alert("Amount money must be an integer!");
+					window.location.reload(true);
+					return false;
+				}
+				else{ 
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
 
-				
+				}
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
 				
@@ -512,7 +533,13 @@
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
+
+				<p>This is where you will add a new expense</p>
+				
+
 				<p id="recommendedExpense"></p>
+
+				<form name="addExpenseForm" method="post">
 				<fieldset class="ui-field-contain">
     					<label for="category">Select Category</label>
     					<select name="category" id="txCategory">
@@ -543,6 +570,7 @@
 				<input name="total" type="text" id="total" value="0" readonly>
 				
 				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
+				</form>
 				<br>
 				
 				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
