@@ -13,15 +13,13 @@ To help users who want to save up their money and keep track of their progress.
 To create a user-friendly budget planning application for users who want to manage their expenses.
 
 # FEATURE LIST: #
-* Register User
 * Add Budget
+* Add Expense
 * Edit Budget
 * Delete Budget
-* View Expenses
-* Add Expense
 * Delete Expense
+* View Expense (Summary)
 * Share on Facebook
-* Summary
 
 ---
 
@@ -30,6 +28,12 @@ To create a user-friendly budget planning application for users who want to mana
 - [Benitez, Jervey](https://github.com/jervey)
 - [Racsa, Jemuel](https://github.com/jemuelracsa)
 - [Vilar, Ken](https://github.com/kenvilar)
+
+###FURTHER READING###
+- [Apache Cordova] (https://cordova.apache.org)
+- [Node.js] (http://nodejs.org/)
+- [Android SDK] (http://developer.android.com/sdk/index.html)
+- [Facebook SDK] (https://developers.facebook.com/?ref=pf)
 
 [Top](#top)
 

@@ -2,11 +2,20 @@
 
 
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
+	<!-----head for facebook story read------->
+     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# profile: http://ogp.me/ns/profile#">
+ 		<meta property="fb:app_id" content="1382388548666955" /> 
+		<meta property="og:type"   content="profile" /> 
+	  	<meta property="og:url"    content="#moneySaved" /> <!----Put URL to the object here---->
+		<meta property="og:title"  content="I saved this much" /> <!---- Put title here ----->
+		<meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" /> 
+	        <meta charset="utf-8" />
+	        <meta name="format-detection" content="telephone=no">
+	<!----------Kutob Diari----------->
+
+
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         
         <!-- <link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1.min.css">
 		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
@@ -33,20 +42,26 @@
 				
 	
 				$('#txFrequency').change(function () {
-					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
     					if($('#txFrequency').val() == "4"){
 						$('#txOccurence').val('4');
+						$('#total').val($('#txAmount').val() * $('#txOccurence').val());
 						$('#txOccurence').hide();			
 					}
 					else if($('#txFrequency').val() == "1"){
 						$('#txOccurence').val('1');
+						$('#total').val($('#txAmount').val() * $('#txOccurence').val());
 						$('#txOccurence').hide();				
 					}
 					else{
 						$('#txOccurence').val('');
-						$('#txOccurence').show();				
+						$('#txOccurence').show();
+						$('#total').val($('#txAmount').val() * $('#txOccurence').val());				
 					}
   				}).change();
+
+				$('#txOccurence').keyup(function() {
+					$('#total').val($('#txAmount').val() * $('#txOccurence').val());			
+				});
 				
 				$("#addExpensePage").on("tap",function(){
   					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
@@ -71,11 +86,11 @@
 
 			function errorHandler(transaction, error) {
    				alert('Error: ' + error.message + ' code: ' + error.code);
-				}
+			}
 
 			function successCallBack() {
    				alert("DEBUGGING: success");
- 				}
+ 			}
 
 			function nullHandler(){};
 
@@ -99,7 +114,6 @@
 
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
-
  				ListDBValues();
  				GetName(id);
 			}
@@ -132,8 +146,6 @@
  					},errorHandler,nullHandler);
  
  					return;
- 
-
 			}
 			
 			function viewSummary() {
@@ -151,9 +163,9 @@
    					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						html = html + '<center><h2>Summary</h2><center>';
-      						html = html + '<table border="1" style="width:100%">';
-      						html += '<tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>';
+      						<!-- html = html + '<center><h2>Summary</h2><center>'; -->
+      						html = html + '<table style="width:100%" data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">';
+      						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead>';
 							var totalExpenses = 0;
 							
 							var month=new Array();
@@ -176,12 +188,12 @@
 								var myDate = new Date(row.Date);
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
-    					        html += '<tr>';
-    					        html += '<a><td>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</td> <td>'+ row.Description +' </td> <td>' + row.Category + '</td> <td>' + row.Amount + '</td></a>';
-    					        html += '</tr>';
+    					        html += '<tbody><tr>';
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td></a>';
+    					        html += '</tr></tbody>';
         						}
         					html += '</table>';
-							html += '<h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3>';
+							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
         					html +=	'<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>';
         					$('#viewSummaryPage').append(html);
       						}
@@ -224,33 +236,9 @@
 					return;
 				}
 
-				var bName = document.forms["addForm"]["txName"].value;
-				var bMoney = document.forms["addForm"]["txMoney"].value;
-				
-				if (bName==null || bName=="") {
-					alert("Please enter a budget name!");
-					window.location.reload(true);
-					return false;
-				} else if (bMoney==null || bMoney=="") {
-					alert("Please enter a budget income!");
-					window.location.reload(true);
-					return false;
-				}else if (bMoney<=0) {
-					alert("Budget income must be greater than zero!");
-					window.location.reload(true);
-					return false;
-				}else if (isNaN(bMoney)) {
-
-					alert("Budget income must be an integer!");
-					window.location.reload(true);
-					return false;
-				}
-				else 
-					db.transaction(function(transaction) {
-					transaction.executeSql(
-							'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',
-							[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()],
-							nullHandler, errorHandler);
+				db.transaction(function(transaction) {
+				transaction.executeSql(
+					'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()], nullHandler, errorHandler);
 				});
 					alert("Added successfully!");
 					window.history.back()
@@ -263,34 +251,10 @@
 
 			function AddExpense() {
 				
-				
-				var eDescription = document.forms["addExpenseForm"]["txDescription"].value;
-				var eAmount = document.forms["addExpenseForm"]["txAmount"].value;
-				
-				if (eDescription==null || eDescription=="") {
-					alert("Please enter a description!");
-					<!-- window.location.assign("#addBudget") -->
-					window.location.reload(true);
-					return false;
-				} else if (eAmount==null || eAmount=="") {
-					alert("Please enter amount.");
-					window.location.reload(true);
-					return false;
-				}else if (eAmount<=0) {
-					alert("Expense amount must be greater than zero!");
-					window.location.reload(true);
-					return false;
-				}else if (isNaN(eAmount)) {
-					alert("Amount money must be an integer!");
-					window.location.reload(true);
-					return false;
-				}
-				else{ 
 				db.transaction(function(transaction) {
 					transaction.executeSql('INSERT INTO Expense(Description, Amount, Category, Occurence, Date, Budget) VALUES (?,?,?,?,?,?)', [ $('#txDescription').val(), $('#txAmount').val(), $('#txCategory').val(), $('#txOccurence').val(), $('#txDate').val(), $('#currentBudgetID').val()], nullHandler, errorHandler);
 				});
 
-				}
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
 				
@@ -371,19 +335,171 @@
 						differences = getDaysBetween(dateToday,lastDayOfBudgetMonth) + 1;
 						monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
-						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ dailyBudgetLeft +'</b>');
-						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft +'" readonly>');
-						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft +'" readonly>');
+						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ monthlyBudgetLeft.toFixed(2) +'</b>');
+						$('#hiddenRecommendedExpenseMonthly').val(monthlyBudgetLeft);
+						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft.toFixed(2) +'" readonly>');
+						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft.toFixed(2) +'" readonly>');
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
  					
-					
  					return;
- 
-
 			}
 
+			function checkAddBudgetInputs() {
+				var value = $.trim($("#txName").val());
+				if(value == 0){
+					window.alert("Please type in a Budget Name.");
+					$("#txName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addBudget");
+					return;
+				}
+				else{
+					if($.isNumeric(value)){
+						window.alert("Please type in a valid Name of your budget");
+						$("#txName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addBudget");
+						return;
+					}
+				}
+				
+				value = $("#txMoney").val();
+				if($.trim(value) == 0){
+					window.alert("Please type in your income.");
+					$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addBudget");
+					return;
+				}
+				else{
+					if($.isNumeric(value)){
+						if((new Number(value)) < 0){
+							window.alert("Please type in a positive income.");
+							$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addBudget");
+							return;
+						}						
+					}
+					else{
+						window.alert("Please type in a Valid number.");
+						$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addBudget");
+						return;
+					}
+				}
+				
+				var target = $("#txTarget").val();
+				if($.trim(target) == 0){
+					window.alert("Please type in your Target saving.");
+					$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addBudget");
+					return;
+				}
+				else{
+					if($.isNumeric(target)){
+						if((new Number(target)) < 0){
+							window.alert("Please type in a positive Target saving.");
+							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addBudget");
+							return;
+						}
+						else if((new Number(target)) == value){
+							window.alert("The Target saving is the same with your income.");
+							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addBudget");
+							return;
+						}
+						else{
+							AddValueToDB();
+							return;
+						}
+					}
+					else{
+						window.alert("Please type in a Valid number.");
+						$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addBudget");
+						return;
+					}
+				}
+			}
+			
+			function checkAddExpenseInputs() {
+				if($.trim($('#txDescription').val()) == 0){
+					window.alert("Please type in the Description of your expense");
+					$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addExpensePage");
+					return;
+				}
+				else{
+					if($.isNumeric($.trim($('#txDescription').val()))){
+						window.alert("Please type in a valid Description of your expense");
+						$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addExpensePage");
+						return;
+					}
+				}
+				
+				var amount = $('#txAmount').val();
+				if($.trim(amount) == 0){
+					window.alert("Please type in the Amount of your expense");
+					$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addExpensePage");
+					return;
+				}
+				else{
+					if($.isNumeric($.trim(amount))){
+						if(new Number($.trim(amount)) < 0){
+							window.alert("The amount you typed in is negative.");
+							$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addExpensePage");
+							return;
+						}
+						else{
+							if((new Number($('#total').val())) > (new Number($('#hiddenRecommendedExpenseMonthly').val()))){
+								window.alert("The amount you are trying to spend is bigger than the remaining budget and will obstruct you from getting the target savings.");
+								$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+								$.mobile.changePage("index.html#addExpensePage");
+								return;
+							}
+						}
+					}
+					else{
+						window.alert("Please type a valid Amount of your expense");
+						$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addExpensePage");
+						return;
+					}
+				}
+				
+				var occurence = $('#txOccurence').val();
+				if($.trim(occurence) == 0){
+					window.alert("Please type in the number of occurence of your expense.");
+					$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					$.mobile.changePage("index.html#addExpensePage");
+					return;
+				}
+				else{
+					if($.isNumeric($.trim(occurence))){
+						if(new Number($.trim(occurence)) < 0){
+							window.alert("The occurence of expense you typed in is negative.");
+							$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							$.mobile.changePage("index.html#addExpensePage");
+							return;
+						}
+						else{
+							AddExpense();
+							return;
+						}
+					}
+					else{
+						window.alert("Please type in a valid number of occurence of your expense.");
+						$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						$.mobile.changePage("index.html#addExpensePage");
+						return;
+					}
+										
+				}
+			}
+			
 			function DeleteBudget() {
 				var id = $('#Myid').val();
 				if (!window.openDatabase) {
@@ -405,11 +521,21 @@
 								[id],
 								nullHandler, errorHandler);
 					});
-				}
-
-				ListDBValues();
-				GetName(id);
-				return false;
+					
+					ListDBValues();
+					GetName(id);
+					
+					return false;
+				}else 
+					var id = $('#Myid').val();
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
+					});
+					window.location.assign("index.html#editBudget");
+					ListDBValues();
+					GetName(id);
+					return;
 			}
 
 			function updateBudget(){
@@ -423,7 +549,7 @@
 							trgt.value = " ";
 							return false;
 						}else if ( ($('#trgt').val() == null) || ($('#trgt').val() == "")  || !isNaN('trgt') ) {
-							alert("Budget target is required and must be an integer!");
+							alert("Please input your valid budget target!");
 							bdgtnm.value = " ";
 							trgt.value = " ";
 							return false;
@@ -431,12 +557,12 @@
 				    		var bdgtnm = $('#bdgtnm').val();
 				    		var trgt = $('#trgt').val();
 							transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
+							window.alert("Budget updated successfully!");
 				    	} else {
 				    		return false;
 				    	}
 			
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
-						
 				    }
 				);
 				ListDBValues();
@@ -448,7 +574,7 @@
 		</script>
 
 
-        <title>Budget Planner</title>
+	<title>Budget Planner</title>
     </head>
 
     <body onload="onBodyLoad()">
@@ -459,34 +585,37 @@
 			  var js, fjs = d.getElementsByTagName(s)[0];
 			  if (d.getElementById(id)) return;
 			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=553068804738984";
+			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1382388548666955";
 			  fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 		</script>
     
-   		<div data-role="page" id="mainpage" onload="onBodyLoad()">
-   		
+   		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
+																													   background-attachment: fixed; 
+																													   background-repeat: repeat; 
+																													   background-size: 100% 100%;">
+
+		<div data-role="page" id="moneySaved">
+			I SAVED THIS MUCH USING MOBILE BUDGET PLANNER
+		</div>
+
 			<div data-role="header">
     			<h1>Home</h1>
   			</div>
-
 			<div data-role="content">
   				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
 						<input type="hidden" id="currentBudgetID">
 						<div id="Budgets"></div>
-					
 				</div>
   			</div>
-  			
   			<!-------------FACEBOOK-------------------->
-  			<div data-role ="content">
+  			<!-- <div data-role ="content">
   				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
   				Share to Facebook</a>
-  			</div>
+  			</div> -->
   			<!------------------------------------------>
-  			
 		</div>
 		
 		<!-------------------------FACEBOOK---------------------------------->
@@ -503,7 +632,10 @@
 		</div>
 		<!------------------------------------------------------------------->
 
-		<div data-role="page" id="addBudget" onload="onBodyLoad()">
+		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
+																													    background-attachment: fixed; 
+																													    background-repeat: repeat; 
+																													    background-size: 100% 100%;">
 			<div data-role="header">
 				<h1>Add Budget</h1>
 			</div>
@@ -517,27 +649,36 @@
 					<script>
 						document.write('<input type="hidden" id="txDateCreated" value="'+ new Date() +'">');
 					</script>
-					<a href="#addBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="AddValueToDB()">Add Budget</a>
+					<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="checkAddBudgetInputs()">Add Budget</a>
 				</form>
 				<br>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-
 			</div>
 		</div>
 
-		<div data-role="page" id="viewSummaryPage"></div>
+		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg'); 
+																						background-attachment: fixed; 
+																					    background-repeat: repeat; 
+																						background-size: 100% 100%;">
+			<div data-role="header">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
+				<h1>Summary</h1>
+			</div>
+			<br>
+			<div id="viewSummaryPage"></div>
+		</div>
 		
-		<div data-role="page" id="addExpensePage" >
+		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
+																							background-attachment: fixed; 
+																							background-repeat: repeat; 
+																							background-size: 100% 100%;">
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
-
-				<p>This is where you will add a new expense</p>
-				
-
 				<p id="recommendedExpense"></p>
+				<input type="hidden" id="hiddenRecommendedExpenseMonthly" value="0">
 
 				<form name="addExpenseForm" method="post">
 				<fieldset class="ui-field-contain">
@@ -568,43 +709,36 @@
 				</script>	
 				<label for="total">Total</label>			
 				<input name="total" type="text" id="total" value="0" readonly>
-				
-				<a class="ui-btn" onClick="AddExpense()">Add Expense</a>
+				<a class="ui-btn" onClick="checkAddExpenseInputs()">Add Expense</a>
 				</form>
-				<br>
-				
 				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-				
 			</div>
 		</div>
 		
-		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget">
-			<div data-role="header" data-position="fixed">
+		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget" style="background-image: url('img/bg.jpg'); 
+																																																																			   background-attachment: fixed; 
+																																																																			   background-repeat: repeat; 
+																																																																			   background-size: 100% 100%;">
+			<div data-role="header">
 				<h1>Edit Budget</h1>
-				<a href="#nav-panel" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-bars"><p></p></a>
 			</div>
 			<div role="main" class="ui-content jqm-content jqm-fullwidth">
-				<div class="fb-share-button" data-href="https://github.com/kenvilar/budget_planner" data-type="button"></div><br>
+				<a href="http://goo.gl/YHNnKD" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini">Share on Facebook</a><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
 				<b>Target: ₱<small id="MyTarget"></small></b>
 				<br>
 				<br>
-				<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
-				<br>
-				<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
-				
-				<div data-demo-html="#editBudget"></div>
-
+				<center>
+					<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
+					<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
+				</center>
 				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
-				<br>
-				<a href="#viewSummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
-				<br>
+				<a href="#SummaryPage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
-
 			</div>
 			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
-				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="pop">Edit Budget</a>
+				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="none">Edit Budget</a>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
 				    <form>
 				        <div style="padding:10px 20px;">
@@ -620,16 +754,7 @@
 				    </form>
 				</div>
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
-				<!-- <a href="http://developers.facebook.com/docs/plugins/" class="fb-share-button ui-btn ui-btn-b"></a> -->
 			</div>
-			<div data-role="panel" data-position-fixed="true" data-position="right" data-display="push" data-theme="b" id="nav-panel">
-				<ul data-role="listview">
-					<li data-icon="delete"><a href="#" data-rel="close">Close menu</a></li>
-						<li><a href="#panel-fixed-page2">Accordion</a></li>
-						<li><a href="#panel-fixed-page2">Ajax Navigation</a></li>
-				</ul>
-			</div>
-			
 		</div>
 
    
