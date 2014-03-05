@@ -165,7 +165,7 @@
       					if (result != null && result.rows != null) {
       						<!-- html = html + '<center><h2>Summary</h2><center>'; -->
       						html = html + '<table style="width:100%" data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">';
-      						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr><th></th></thead>';
+      						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead>';
 							var totalExpenses = 0;
 							
 							var month=new Array();
@@ -189,7 +189,7 @@
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
     					        html += '<tbody><tr>';
-    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b" onClick="DeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b" data-inline="true" data-mini="true" onClick="DeleteExpense(' + row.ExpenseId +')">Delete</a></center></td></a>';
     					        html += '</tr></tbody>';
         						}
         					html += '</table>';
