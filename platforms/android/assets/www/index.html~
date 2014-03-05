@@ -210,7 +210,7 @@
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
     					        html += '<tbody><tr>';
-    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b" onClick="confirmDeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all" onClick="confirmDeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
     					        html += '</tr></tbody>';
         						}
         					html += '</table>';
@@ -360,9 +360,6 @@
 						break;
 					case 24:
 						message = "Please enter a valid Target Savings";
-						break;
-					case 25:
-						message = "The Target savings you entered is equal to the money you have"
 						break;
 					
 				}
@@ -639,8 +636,9 @@
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
 						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ monthlyBudgetLeft.toFixed(2) +'</b>');
 						$('#hiddenRecommendedExpenseMonthly').val(monthlyBudgetLeft);
-						$('#dailyBudget').append('<form name="totalDailyMoneyForm" method="post"><input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft.toFixed(2) +'" readonly></form>');
-						$('#monthlyBudget').append('<form name="totalMonthlyMoneyForm" method="post"><input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft.toFixed(2) +'" readonly></form>');
+						$('#dailyBudget').append('<center><div class="ui-input-btn ui-btn ui-btn-inline ui-shadow ui-corner-all"><h3>₱ '+ dailyBudgetLeft.toFixed(2) +'</h3><input type="button" data-enhanced="true" value="Enhanced"></div></center>');
+						$('#monthlyBudget').append('<center><div class="ui-input-btn ui-btn ui-btn-inline ui-shadow ui-corner-all"><h3>₱ '+ monthlyBudgetLeft.toFixed(2) +'</h3><input type="button" data-enhanced="true" value="Enhanced"></div></center>');
+
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
@@ -913,7 +911,8 @@
 				);
 				ListDBValues();
 				GetName(id);
-				alert("Budget updated successfully!");
+				//alert("Budget updated successfully!");
+				alertSuccess(5);
 				$.mobile.changePage("index.html#editBudget");
 				return;
 			}
@@ -1064,23 +1063,23 @@
 			</div>
 		</div>
 		
-		<div data-role="page" id="editBudget" onload="onBodyLoad()" data-role="page" class="jqm-demos" data-title="Panel fixed positioning" data-url="editBudget" style="background-image: url('img/bg.jpg'); 
-																																																																			   background-attachment: fixed; 
-																																																																			   background-repeat: repeat; 
-																																																																			   background-size: 100% 100%;">
+		<div data-role="page" id="editBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
+																														background-attachment: fixed; 
+																														background-repeat: repeat; 
+																														background-size: 100% 100%;">
 			<div data-role="header">
 				<h1>Edit Budget</h1>
 			</div>
-			<div role="main" class="ui-content jqm-content jqm-fullwidth">
-				<a href="http://goo.gl/XPaG5Y" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini">Share on Facebook</a><br>
+			<div data-role="content">
+				<a href="http://goo.gl/XPaG5Y" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
 				<b>Target: ₱<small id="MyTarget"></small></b>
 				<br>
 				<br>
 				<center>
-					<h3>Estimated Daily Budget: </h3><h2 id="dailyBudget"></h2>
-					<h3>Remaining Monthly Budget: </h3><h2 id="monthlyBudget"></h2>
+					<h3>Estimated Daily Budget: </h3><div id="dailyBudget"></div>
+					<h3>Remaining Monthly Budget: </h3><div id="monthlyBudget"></div>
 				</center>
 				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
 				<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
