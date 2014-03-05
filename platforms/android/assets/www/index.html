@@ -210,7 +210,7 @@
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
     					        html += '<tbody><tr>';
-    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-shadow ui-corner-all" onClick="DeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all" onClick="confirmDeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
     					        html += '</tr></tbody>';
         						}
         					html += '</table>';
@@ -237,7 +237,114 @@
 			}
 
 
-			function alertSuccess() {
+			function alertSuccess(successType) {
+				var message;
+				switch(successType){
+					case 1:
+						message = "Added successfully!";
+						break;
+					case 2:
+						message = "Expense added successfully!";
+						break;
+					case 3:
+						message = "Expense deleted successfully!";
+						break;
+					case 4:
+						message = "Budget deleted successfully!";
+						break;
+
+				}			
+					
+				$.noty.defaults = {
+					layout: 'topCenter', 
+					theme: 'defaultTheme',
+					dismissQueue: true, 
+					maxVisible: 1, 
+					template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+					animation: {  
+						open: {height: 'toggle',opacity:'1'}, 
+						close: {height: 'toggle',opacity:'0.1'}, 
+						easing: 'linear', 
+						speed: 200 
+					},
+					timeout: 2500, 
+					force: false, 
+					modal: false, 
+					closeWith: [ 'click'],
+					callback: {
+						onShow: function() {},
+						afterShow: function() {},
+						onClose: function() {},
+						afterClose: function() {}
+					}
+				};
+				var n = noty({
+					text: ''+ message +'', 
+					type: 'success', 
+					buttons:false
+				});
+			
+			}
+
+			function executeAlert(errorType){
+				var message;
+				switch(errorType){
+					case 1:
+						message = "Please type in a Budget name";
+						break;
+					case 2:
+						message = "Please type in a valid Name of your budget";
+						break;
+					case 3:
+						message = "Please type in your income";
+						break;
+					case 4:
+						message = "Please type in a positive income";
+						break;
+					case 5:
+						message = "Please type in a Valid number";
+						break;
+					case 6:
+						message = "Please type in your Target saving";
+						break;
+					case 7:
+						message = "Please type in a positive Target saving";
+						break;
+					case 8:
+						message = "The Target saving is the same with your income";
+						break;
+					case 9:
+						message = "Please type in a Valid number";
+						break;
+					case 10:
+						message = "Please type in the Description of your expense";
+						break;
+					case 11:
+						message = "Please type in the valid Description of your expense";
+						break;
+					case 12:
+						message = "Please type in the Amount of your expense";
+						break;
+					case 13:
+						message = "The amount you typed in is negative";
+						break;
+					case 14:
+						message = "The amount you are trying to spend is bigger than the remaining budget and will obstruct you from getting the target savings";
+						break;
+					case 15:
+						message = "Please type a valid Amount of your expense";
+						break;
+					case 16:
+						message = "Please type in the number of occurence of your expense";
+						break;
+					case 17:
+						message = "The occurence of expense you typed in is negative";
+						break;
+					case 18:
+						message = "Please type in a valid number of occurence of your expense";
+						break;
+
+				}
 			
 				$.noty.defaults = {
 					layout: 'topCenter', 
@@ -263,12 +370,15 @@
 					}
 				};
 				var n = noty({
-					text: 'Success!', 
-					type: 'success', 
+					text: ''+ message +'', 
+					type: 'error', 
 					buttons:false
 				});
-			
+
+				
 			}
+
+			
 			
 			<!---------------------------------->
 			function connectToFacebook(){
@@ -297,10 +407,11 @@
 				});
 					//alert("Added successfully!");
 					window.history.back();
-					alertSuccess();
+					
 				ListDBValues();
+				alertSuccess(1);
 				GetName(id);
-				$.mobile.changePage("index.html#mainpage");
+				//$.mobile.changePage("index.html#mainpage");
 				
 				return false;
 			}
@@ -313,22 +424,63 @@
 
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
-				
-				window.alert("Expense added successfully!");
+				alertSuccess(2);
+				//window.alert("Expense added successfully!");
 				return;
 			}
+
+			function confirmDeleteExpense(id){
+				$.noty.defaults = {
+					layout: 'topCenter', 
+					theme: 'defaultTheme',
+					dismissQueue: true, 
+					maxVisible: 1, 
+					template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+					animation: {  
+						open: {height: 'toggle',opacity:'1'}, 
+						close: {height: 'toggle',opacity:'0.1'}, 
+						easing: 'linear', 
+						speed: 200 
+					},
+					timeout: false, 
+					force: false, 
+					modal: true, 
+					closeWith: [ 'click'],
+					callback: {
+						onShow: function() {},
+						afterShow: function() {},
+						onClose: function() {},
+						afterClose: function() {}
+					}
+				};
+				var n = noty({
+					text: 'Are you sure you want to Delete?', 
+					type: 'confirm', 
+					buttons: [
+    							{addClass: 'btn btn-primary', text: 'Ok', onClick: function($noty) {
+							        $noty.close();
+									confirmedDeleteExpense(id);
+							 	}
+    							},
+							{addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
+								$noty.close();
+								
+								}
+							}
+						]
+					});
+			}
 			
-			function DeleteExpense(id) {
-				if(confirm("Are you sure you want to delete?")) {
+			function confirmedDeleteExpense(id) {
+				
 					db.transaction(function(transaction) {
 						transaction.executeSql('DELETE FROM Expense WHERE ExpenseId = ?;', 
 															[id], nullHandler, errorHandler);
 					});
-					window.alert("Expense deleted successfully!");
+					alertSuccess(3);
+					//window.alert("Expense deleted successfully!");
 					GetName(id);
 					viewSummary();
-					
-				}
 				
 				return;	
 			}
@@ -419,14 +571,15 @@
 			function checkAddBudgetInputs() {
 				var value = $.trim($("#txName").val());
 				if(value == 0){
-					window.alert("Please type in a Budget Name.");
+					executeAlert(1);
 					$("#txName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addBudget");
 					return;
 				}
 				else{
 					if($.isNumeric(value)){
-						window.alert("Please type in a valid Name of your budget");
+						//window.alert("Please type in a valid Name of your budget");
+						executeAlert(2);
 						$("#txName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
 						return;
@@ -435,7 +588,8 @@
 				
 				value = $("#txMoney").val();
 				if($.trim(value) == 0){
-					window.alert("Please type in your income.");
+					//window.alert("Please type in your income.");
+					executeAlert(3);
 					$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addBudget");
 					return;
@@ -443,14 +597,16 @@
 				else{
 					if($.isNumeric(value)){
 						if((new Number(value)) < 0){
-							window.alert("Please type in a positive income.");
+							executeAlert(4);
+							//window.alert("Please type in a positive income.");
 							$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addBudget");
 							return;
 						}						
 					}
 					else{
-						window.alert("Please type in a Valid number.");
+						executeAlert(5);
+						//window.alert("Please type in a Valid number.");
 						$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
 						return;
@@ -459,7 +615,8 @@
 				
 				var target = $("#txTarget").val();
 				if($.trim(target) == 0){
-					window.alert("Please type in your Target saving.");
+					//window.alert("Please type in your Target saving.");
+					executeAlert(6);
 					$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addBudget");
 					return;
@@ -467,13 +624,15 @@
 				else{
 					if($.isNumeric(target)){
 						if((new Number(target)) < 0){
-							window.alert("Please type in a positive Target saving.");
+							executeAlert(7);
+							//window.alert("Please type in a positive Target saving.");
 							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addBudget");
 							return;
 						}
 						else if((new Number(target)) == value){
-							window.alert("The Target saving is the same with your income.");
+							executeAlert(8);
+							//window.alert("The Target saving is the same with your income.");
 							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addBudget");
 							return;
@@ -484,7 +643,8 @@
 						}
 					}
 					else{
-						window.alert("Please type in a Valid number.");
+						executeAlert(9);
+						//window.alert("Please type in a Valid number.");
 						$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
 						return;
@@ -494,14 +654,16 @@
 			
 			function checkAddExpenseInputs() {
 				if($.trim($('#txDescription').val()) == 0){
-					window.alert("Please type in the Description of your expense");
+					//window.alert("Please type in the Description of your expense");
+					executeAlert(10);
 					$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addExpensePage");
 					return;
 				}
 				else{
 					if($.isNumeric($.trim($('#txDescription').val()))){
-						window.alert("Please type in a valid Description of your expense");
+						//window.alert("Please type in a valid Description of your expense");
+						executeAlert(11);
 						$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addExpensePage");
 						return;
@@ -510,7 +672,8 @@
 				
 				var amount = $('#txAmount').val();
 				if($.trim(amount) == 0){
-					window.alert("Please type in the Amount of your expense");
+					executeAlert(12);
+					//window.alert("Please type in the Amount of your expense");
 					$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addExpensePage");
 					return;
@@ -518,14 +681,16 @@
 				else{
 					if($.isNumeric($.trim(amount))){
 						if(new Number($.trim(amount)) < 0){
-							window.alert("The amount you typed in is negative.");
+							executeAlert(13);
+							//window.alert("The amount you typed in is negative.");
 							$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addExpensePage");
 							return;
 						}
 						else{
 							if((new Number($('#total').val())) > (new Number($('#hiddenRecommendedExpenseMonthly').val()))){
-								window.alert("The amount you are trying to spend is bigger than the remaining budget and will obstruct you from getting the target savings.");
+								//window.alert("The amount you are trying to spend is bigger than the remaining budget and will obstruct you from getting the target savings.");
+								executeAlert(14);
 								$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 								$.mobile.changePage("index.html#addExpensePage");
 								return;
@@ -533,7 +698,8 @@
 						}
 					}
 					else{
-						window.alert("Please type a valid Amount of your expense");
+						executeAlert(15);
+						//window.alert("Please type a valid Amount of your expense");
 						$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addExpensePage");
 						return;
@@ -542,7 +708,8 @@
 				
 				var occurence = $('#txOccurence').val();
 				if($.trim(occurence) == 0){
-					window.alert("Please type in the number of occurence of your expense.");
+					executeAlert(16);
+					//window.alert("Please type in the number of occurence of your expense.");
 					$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addExpensePage");
 					return;
@@ -550,7 +717,8 @@
 				else{
 					if($.isNumeric($.trim(occurence))){
 						if(new Number($.trim(occurence)) < 0){
-							window.alert("The occurence of expense you typed in is negative.");
+							executeAlert(17);
+							//window.alert("The occurence of expense you typed in is negative.");
 							$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addExpensePage");
 							return;
@@ -561,7 +729,8 @@
 						}
 					}
 					else{
-						window.alert("Please type in a valid number of occurence of your expense.");
+						executeAlert(18);
+						//window.alert("Please type in a valid number of occurence of your expense.");
 						$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addExpensePage");
 						return;
@@ -569,15 +738,65 @@
 										
 				}
 			}
-			
-			function DeleteBudget() {
-				var id = $('#Myid').val();
-				if (!window.openDatabase) {
-					alert('Databases are not supported in this browser.');
-					return;
-				}
 
-				if(confirm("Are you sure you want to delete?")) {
+
+			function confirmDeleteBudget(){
+				$.noty.defaults = {
+					layout: 'topCenter', 
+					theme: 'defaultTheme',
+					dismissQueue: true, 
+					maxVisible: 1, 
+					template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+					animation: {  
+						open: {height: 'toggle',opacity:'1'}, 
+						close: {height: 'toggle',opacity:'0.1'}, 
+						easing: 'linear', 
+						speed: 200 
+					},
+					timeout: false, 
+					force: false, 
+					modal: true, 
+					closeWith: [ 'click'],
+					callback: {
+						onShow: function() {},
+						afterShow: function() {},
+						onClose: function() {},
+						afterClose: function() {}
+					}
+				};
+				var n = noty({
+					text: 'Are you sure you want to Delete?', 
+					type: 'confirm', 
+					buttons: [
+    							{addClass: 'btn btn-primary', text: 'Ok', onClick: function($noty) {
+							        $noty.close();
+								confirmedDeleteBudget();		
+							 	}
+    							},
+							{addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
+								$noty.close();
+								cancelledDeleteBudget();
+								}
+							}
+						]
+					});
+			}
+			
+			function cancelledDeleteBudget() {
+				var id = $('#Myid').val();
+					db.transaction(function(transaction) {
+						transaction.executeSql(
+								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
+					});
+				window.location.assign("index.html#editBudget");
+				ListDBValues();
+				GetName(id);
+				return;
+			}
+	
+			function confirmedDeleteBudget() {
+				var id = $('#Myid').val();
+
 					db.transaction(function(transaction) {
 						transaction.executeSql(
 								'DELETE FROM BudgetDB WHERE BudgetId = ?;',
@@ -591,23 +810,14 @@
 								[id],
 								nullHandler, errorHandler);
 					});
-					
+					alertSuccess(4);
 					window.location.assign("index.html#mainpage");
 					
 					ListDBValues();
 					GetName(id);
 					
 					return false;
-				}else 
-					var id = $('#Myid').val();
-					db.transaction(function(transaction) {
-						transaction.executeSql(
-								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
-					});
-					window.location.assign("index.html#editBudget");
-					ListDBValues();
-					GetName(id);
-					return;
+					
 			}
 
 			function updateBudget(){
@@ -826,7 +1036,7 @@
 				        </div>
 				    </form>
 				</div>
-				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="DeleteBudget()">Delete Budget</a>
+				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="confirmDeleteBudget()">Delete Budget</a>
 			</div>
 		</div>
 
