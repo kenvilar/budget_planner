@@ -343,7 +343,28 @@
 					case 18:
 						message = "Please type in a valid number of occurence of your expense";
 						break;
-
+					case 19:
+						message = "Please enter your new budget name";
+						break;
+					case 20:
+						message = "Please enter a valid Budget name";
+						break;
+					case 21:
+						message = "Please enter your new Target savings";
+						break;
+					case 22:
+						message = "Please enter a positive Target savings";
+						break;
+					case 23:
+						message = 'The Target savings you entered is bigger than your money which is ₱'+ $('#MyMoneyHidden').val() +'';
+						break;
+					case 24:
+						message = "Please enter a valid Target Savings";
+						break;
+					case 25:
+						message = "The Target savings you entered is equal to the money you have"
+						break;
+					
 				}
 			
 				$.noty.defaults = {
@@ -378,6 +399,59 @@
 				
 			}
 
+			function validateEditBudgetInputs() {
+				var newBudgetName = $.trim($('#bdgtnm').val());
+				if(newBudgetName == 0){
+					//alert("Please enter your new budget name");
+					executeAlert(19);
+					$("#bdgtnm").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					return;
+				}
+				else{
+					if($.isNumeric(newBudgetName)){
+						//alert("Please enter a valid Budget name");
+						executeAlert(20);
+						$("#bdgtnm").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						return;
+					}
+				}
+			
+				var newTarget = $.trim($('#trgt').val());
+				if(newTarget == 0){
+					executeAlert(21);
+					//alert("Please enter your new Target savings");
+					$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+					return;
+				}
+				else{
+					if($.isNumeric(newTarget)){
+						if(new Number(newTarget) < 0){
+							//alert("Please enter a positive Target savings");
+							executeAlert(22);
+							$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							return;
+						}
+						else if(new Number(newTarget) > new Number($('#MyMoneyHidden').val())){
+							//alert('The Target savings you entered is bigger than your money which is ₱'+ $('#MyMoneyHidden').val() +'');				
+							executeAlert(23);			
+							$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+							return;
+						}
+						else{
+							updateBudget();
+						}
+					}
+					else{
+						//alert("Please enter a valid Target Savings");
+						executeAlert(24);
+						$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						return;
+					}
+				}
+
+			}
+
+
 			
 			
 			<!---------------------------------->
@@ -393,6 +467,11 @@
 				$('#txDescription').val('');
 				$('#txAmount').val('');
 				return;
+			}
+
+			function clearEditBudgetField(){
+				$('#bdgtnm').val('');
+				$('#trgt').val('');
 			}
 
 			function AddValueToDB() {
@@ -507,7 +586,7 @@
   					alert('Databases are not supported in this browser.');
   					return;
  				}
- 
+				
  				$('#MyTarget').html('');
  				$('#MyName').html('');
 				$('#dailyBudget').html('');
@@ -532,6 +611,7 @@
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
           						$('#MyMoney').append(row.Money);
+							$('#MyMoney').append('<input type="hidden" id="MyMoneyHidden" value="'+ row.Money +'">');
 							budgetDate = new Date(row.Date);
 							lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
 							totalMoney = row.Money;
@@ -559,8 +639,8 @@
 						dailyBudgetLeft = monthlyBudgetLeft / differences;
 						$('#recommendedExpense').append('The recommended expense may not be more than <b>₱'+ monthlyBudgetLeft.toFixed(2) +'</b>');
 						$('#hiddenRecommendedExpenseMonthly').val(monthlyBudgetLeft);
-						$('#dailyBudget').append('<input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft.toFixed(2) +'" readonly>');
-						$('#monthlyBudget').append('<input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft.toFixed(2) +'" readonly>');
+						$('#dailyBudget').append('<form name="totalDailyMoneyForm" method="post"><input type="text" id="totalDailyMoney" value="₱ '+ dailyBudgetLeft.toFixed(2) +'" readonly></form>');
+						$('#monthlyBudget').append('<form name="totalMonthlyMoneyForm" method="post"><input type="text" id="totalMonthlyMoney" value="₱ '+ monthlyBudgetLeft.toFixed(2) +'" readonly></form>');
       						}
      					},errorHandler);
  					},errorHandler,nullHandler);
@@ -820,36 +900,22 @@
 					
 			}
 
+			
+
 			function updateBudget(){
 				var id = $('#Myid').val();
-				var bdgtnm = document.getElementById("bdgtnm");
-				var trgt = document.getElementById("trgt");
+				//var bdgtnm = document.getElementById("bdgtnm");
+				//var trgt = document.getElementById("trgt");
 				db.transaction(
-				    function (transaction) {
-						if( ($('#bdgtnm').val() == null) || ($('#bdgtnm').val() == "") ) {
-							alert("Please enter a budget name!");
-							trgt.value = " ";
-							return false;
-						}else if ( ($('#trgt').val() == null) || ($('#trgt').val() == "")  || !isNaN('trgt') ) {
-							alert("Please input your valid budget target!");
-							bdgtnm.value = " ";
-							trgt.value = " ";
-							return false;
-						}else if ( ($('#bdgtnm').val() != '') && ($('#trgt').val() != '') ) {
-				    		var bdgtnm = $('#bdgtnm').val();
-				    		var trgt = $('#trgt').val();
-							transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
-							window.alert("Budget updated successfully!");
-				    	} else {
-				    		return false;
-				    	}
-			
-				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [bdgtnm, trgt, id]);
+				    function (transaction) {			
+				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [$('#bdgtnm').val(), $('#trgt').val(), id]);
 				    }
 				);
 				ListDBValues();
 				GetName(id);
-				return false;
+				alert("Budget updated successfully!");
+				$.mobile.changePage("index.html#editBudget");
+				return;
 			}
 
 
@@ -893,7 +959,7 @@
 				</div>
   			</div>
   			<!-------------FACEBOOK-------------------->
-  			<!-- <div data-role ="content">
+  			<!-- <div data-role ="content">MyMoneyHidden
   				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
   				Share to Facebook</a>
   			</div> -->
@@ -1021,7 +1087,7 @@
 				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
 			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
-				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="none">Edit Budget</a>
+				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="none" onClick="clearEditBudgetField()">Edit Budget</a>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
 				    <form>
 				        <div style="padding:10px 20px;">
@@ -1030,8 +1096,8 @@
 				            <label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
 				            <input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
 				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
-				            <input type="number" name="budget_target" pattern="[0-9]*" id="trgt" value="" data-theme="a" placeholder="target">
-				            <a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="updateBudget()">Update</a>
+				            <input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target">
+				            <a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="validateEditBudgetInputs()">Update</a>
 							<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-arrow-l">Cancel</a>	
 				        </div>
 				    </form>
