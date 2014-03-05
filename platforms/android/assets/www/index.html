@@ -43,7 +43,10 @@
 		<link rel="stylesheet" type="text/css" href="noty/css/buttons.css">
 		<script type="text/javascript" src="noty/js/noty/themes/default.js"></script>
 
-
+		<!-- Facebook login auth -->
+		<script type="text/javascript" src="js/oauth.js"></script>
+		<script type="text/javascript" src="js/facebook.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
 
 
 		<script type="text/javascript" charset="utf-8">	
@@ -1039,9 +1042,11 @@
 				<fieldset class="ui-field-contain">
     					<label for="occurence">Select frequency</label>
     						<select name="occurence" id="txFrequency">
-      							<option selected="selected" value="4">Weekly</option>
-      							<option value="1">Monthly</option>
-      							<option value="Other">Other</option>
+								<optgroup label="">
+									<option selected="selected" value="4">Weekly</option>
+									<option value="1">Monthly</option>
+								<optgroup label="Custom per Month">
+									<option value="Other">Other</option>
    						</select>
   					</fieldset> 
 				<input type="text" placeholder="Number of Occurence per month" id="txOccurence" value="4">
@@ -1064,11 +1069,11 @@
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content">
-				<a href="http://goo.gl/XPaG5Y" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
+				<a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Facebook Login</a>
+				<a id="facebook_login" onClick="facebook.onFacebookShare();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
 				<b>Target: ₱<small id="MyTarget"></small></b>
-				<br>
 				<br>
 				<center>
 					<h3>Estimated Daily Budget: </h3><div id="dailyBudget"></div>

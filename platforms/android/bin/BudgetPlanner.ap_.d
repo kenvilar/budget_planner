@@ -752,11 +752,15 @@ C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images\icons-svg\user-white.svg \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images\icons-svg\video-black.svg \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\jquery.mobile-1.4.1\images\icons-svg\video-white.svg \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\app.js \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\facebook.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\fb.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\index.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\jquery-1.10.2.min.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\jquery-2.1.0.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\jquery.mobile-1.4.1.min.js \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\js\oauth.js \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\css \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\demo \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\Gruntfile.js \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\js \
@@ -764,6 +768,7 @@ C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\LICENSE.
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\noty.jquery.json \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\package.json \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\README.markdown \
+C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\css\buttons.css \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\demo\allLayouts.html \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\demo\allTypes.html \
 C:\Users\Ken\workspace\budget_planner\platforms\android\assets\www\noty\demo\api.html \
