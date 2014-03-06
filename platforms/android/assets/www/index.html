@@ -210,11 +210,9 @@
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
     					        html += '<tbody><tr>';
-<<<<<<< HEAD
-    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b" data-inline="true" data-mini="true" onClick="DeleteExpense(' + row.ExpenseId +')">Delete</a></center></td></a>';
-=======
+
     					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all" onClick="confirmDeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
->>>>>>> d4fe10dfbba6e1c9d5cb48fa4ad1c41daf685bcc
+
     					        html += '</tr></tbody>';
         						}
         					html += '</table>';
