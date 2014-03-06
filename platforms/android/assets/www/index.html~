@@ -170,10 +170,6 @@
 			}
 			
 			function viewSummary() {
- 				if (!window.openDatabase) {
-  					alert('Databases are not supported in this browser.');
-  				return;
- 				}
  
  				html = '';
  				$('#viewSummaryPage').html('');
@@ -184,7 +180,7 @@
    					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						<!-- html = html + '<center><h2>Summary</h2><center>'; -->
+      						//<!-- html = html + '<center><h2>Summary</h2><center>'; -->
       						html = html + '<table style="width:100%" data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">';
       						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr><th></th></thead>';
 							var totalExpenses = 0;
@@ -215,7 +211,6 @@
         						}
         					html += '</table>';
 							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
-        					html +=	'<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>';
         					$('#viewSummaryPage').append(html);
       						}
      					},errorHandler);
@@ -252,6 +247,8 @@
 					case 4:
 						message = "Budget deleted successfully!";
 						break;
+					case 5:
+						message = "Budget updated successfully!";
 
 				}			
 					
@@ -550,12 +547,10 @@
 			function confirmedDeleteExpense(id) {
 				
 					db.transaction(function(transaction) {
-						transaction.executeSql('DELETE FROM Expense WHERE ExpenseId = ?;', 
-															[id], nullHandler, errorHandler);
+						transaction.executeSql('DELETE FROM Expense WHERE ExpenseId = ?;', [id], nullHandler, errorHandler);
 					});
 					alertSuccess(3);
-					//window.alert("Expense deleted successfully!");
-					GetName(id);
+					GetName($('#currentBudgetID').val());
 					viewSummary();
 				
 				return;	
@@ -1003,10 +998,7 @@
 			</div>
 		</div>
 
-		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg'); 
-																						background-attachment: fixed; 
-																					    background-repeat: repeat; 
-																						background-size: 100% 100%;">
+		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg');background-attachment: fixed;background-repeat: repeat; background-size: 100% 100%;">
 			<div data-role="header">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
 				<h1>Summary</h1>
@@ -1014,6 +1006,7 @@
 			<br>
 			<input type="hidden" id = "MyExpenseId" for="MyExpenseId"></input>
 			<div id="viewSummaryPage"></div>
+			<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 		</div>
 		
 		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
