@@ -209,7 +209,7 @@
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += row.Amount;
     					        html += '<tbody><tr>';
-    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all" onClick="confirmDeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext" onClick="confirmDeleteExpense(' + row.ExpenseId +')"></a></center></td></a>';
     					        html += '</tr></tbody>';
         						}
         					html += '</table>';
@@ -1069,8 +1069,8 @@
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content">
-				<a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Facebook Login</a>
-				<a id="facebook_login" onClick="facebook.onFacebookShare();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
+				<!-- <a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Facebook Login</a> -->
+				<a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
 				<b>Budget Name: <small id="MyName"></small></b><br>
 				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
 				<b>Target: ₱<small id="MyTarget"></small></b>

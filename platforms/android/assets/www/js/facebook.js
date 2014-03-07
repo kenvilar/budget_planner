@@ -1,7 +1,7 @@
 // APP FACEBOOK ID
 var appId = '553068804738984';
 //CONFIGURE URL IN FACEBOOK APP->Internet por celular->Mobile Site URL
-var redirectUrl = 'http://goo.gl/AaTBbj';
+var redirectUrl = 'http://goo.gl/rJNWs9';
 // APP FACEBOOK PERMISSIONS
 var permissions = 'basic_info, create_note, email, manage_notifications, photo_upload, public_profile, publish_actions, publish_checkins, publish_stream, share_item, status_update, user_about_me, user_activities, user_friends, user_status, video_upload';
 
