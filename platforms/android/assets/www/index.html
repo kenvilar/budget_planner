@@ -173,7 +173,6 @@
 			}
 			
 			function viewSummary() {
- 
  				html = '';
  				$('#viewSummaryPage').html('');
  				
@@ -482,8 +481,8 @@
 					'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()], nullHandler, errorHandler);
 				});
 					//alert("Added successfully!");
-					window.history.back();
-					
+					//window.history.back();
+				$.mobile.changePage("index.html#mainpage");
 				ListDBValues();
 				alertSuccess(1);
 				GetName(id);
@@ -864,36 +863,33 @@
 						transaction.executeSql(
 								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
 					});
-				window.location.assign("index.html#editBudget");
 				ListDBValues();
 				GetName(id);
-				return;
+				<!-- window.location.assign("index.html#editBudget"); -->
+				$.mobile.changePage("index.html#editBudget");
+				return false;
 			}
 	
 			function confirmedDeleteBudget() {
 				var id = $('#Myid').val();
-
 					db.transaction(function(transaction) {
 						transaction.executeSql(
 								'DELETE FROM BudgetDB WHERE BudgetId = ?;',
 								[id],
 								nullHandler, errorHandler);
 					});
-
 					db.transaction(function(transaction) {
 						transaction.executeSql(
 								'DELETE FROM Expense WHERE Budget = ?;',
 								[id],
 								nullHandler, errorHandler);
 					});
-					alertSuccess(4);
-					window.location.assign("index.html#mainpage");
-					
 					ListDBValues();
 					GetName(id);
-					
+					alertSuccess(4);
+					<!-- window.location.assign("index.html#mainpage"); -->
+					$.mobile.changePage("index.html#mainpage");
 					return false;
-					
 			}
 
 			
@@ -924,64 +920,29 @@
 
     <body onload="onBodyLoad()">
     
-    	<div id="fb-root"></div>
-		<script>
-			(function(d, s, id) {
-			  var js, fjs = d.getElementsByTagName(s)[0];
-			  if (d.getElementById(id)) return;
-			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1382388548666955";
-			  fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-		</script>
-    
    		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																													   background-attachment: fixed; 
 																													   background-repeat: repeat; 
 																													   background-size: 100% 100%;">
-
-		<div data-role="page" id="moneySaved">
-			I SAVED THIS MUCH USING MOBILE BUDGET PLANNER
-		</div>
-
-			<div data-role="header">
+			<div data-role="header" data-theme="b" data-poistion="fixed">
     			<h1>Home</h1>
   			</div>
 			<div data-role="content">
-  				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
+  				<a href="#addBudget" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
 						<input type="hidden" id="currentBudgetID">
 						<div id="Budgets"></div>
 				</div>
   			</div>
-  			<!-------------FACEBOOK-------------------->
-  			<!-- <div data-role ="content">MyMoneyHidden
-  				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
-  				Share to Facebook</a>
-  			</div> -->
-  			<!------------------------------------------>
 		</div>
-		
-		<!-------------------------FACEBOOK---------------------------------->
-		<div data-role="page" id="facebookConnect">
-			<div data-role="header">
-				<h1>Login</h1>
-			</div>
-			<div data-role="content">
-			<input type="text" placeholder="Username" id="txFbUsername">
-			<input type="text" placeholder="Password" id="txFbPasword">
-			<a href="#mainpage" class="ui-btn" onclick="">Login</a> 
-			<a href="#mainpage" class="ui-btn">Back</a>
-			</div>
-		</div>
-		<!------------------------------------------------------------------->
 
 		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																													    background-attachment: fixed; 
 																													    background-repeat: repeat; 
 																													    background-size: 100% 100%;">
-			<div data-role="header">
+			<div data-role="header" data-theme="b">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Budget</h1>
 			</div>
 			<div data-role="content">
@@ -996,28 +957,25 @@
 					</script>
 					<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="checkAddBudgetInputs()">Add Budget</a>
 				</form>
-				<br>
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
 		</div>
 
 		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg');background-attachment: fixed;background-repeat: repeat; background-size: 100% 100%;">
-			<div data-role="header">
-				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
+			<div data-role="header" data-theme="b">
+				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Summary</h1>
 			</div>
 			<br>
 			<input type="hidden" id = "MyExpenseId" for="MyExpenseId"></input>
 			<div id="viewSummaryPage"></div>
-			<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 		</div>
 		
 		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
 																							background-attachment: fixed; 
 																							background-repeat: repeat; 
 																							background-size: 100% 100%;">
-			<div data-role="header">
-				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
+			<div data-role="header" data-theme="b">
+				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Expense</h1>
 			</div>
 			<div data-role="content">
@@ -1055,9 +1013,8 @@
 				</script>	
 				<label for="total">Total</label>			
 				<input name="total" type="text" id="total" value="0" readonly>
-				<a class="ui-btn" onClick="checkAddExpenseInputs()">Add Expense</a>
+				<a class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="checkAddExpenseInputs()">Add Expense</a>
 				</form>
-				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
 		</div>
 		
@@ -1065,44 +1022,46 @@
 																														background-attachment: fixed; 
 																														background-repeat: repeat; 
 																														background-size: 100% 100%;">
-			<div data-role="header">
+			<div data-role="header" data-theme="b">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content">
-				<!-- <a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Facebook Login</a> -->
-				<a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
-				<b>Budget Name: <small id="MyName"></small></b><br>
-				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
-				<b>Target: ₱<small id="MyTarget"></small></b>
-				<br>
 				<center>
+					<a id="facebook_login" onClick="facebook.onFacebookLogin();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
+					<b>Budget Name: <small id="MyName"></small></b><br>
+					<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
+					<b>Target: ₱<small id="MyTarget"></small></b>
+					<br>
 					<h3>Estimated Daily Budget: </h3><div id="dailyBudget"></div>
 					<h3>Remaining Monthly Budget: </h3><div id="monthlyBudget"></div>
 				</center>
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
-				<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
-			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
-				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="none" onClick="clearEditBudgetField()">Edit Budget</a>
+			<div data-role="footer" data-position="fixed" data-theme="b">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#popupedit" data-rel="popup" data-position-to="window" data-icon="edit" data-transition="none" onClick="clearEditBudgetField()">Edit Budget</a></li>
+						<li><a data-icon="delete" onClick="confirmDeleteBudget()">Delete Budget</a></li>
+						<li><a href="#addExpensePage" data-icon="plus" onClick="clearAddExpenseField()">Add Expense</a></li>
+						<li><a data-icon="grid" onCLick="viewSummary()">Summary</a></li>
+					</ul>
+				</div>	
+			</div>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
-				    <form>
-				        <div style="padding:10px 20px;">
-				            <h3>Edit your budget</h3>
-				            <input type="hidden" id = "Myid" for="Myid"></input>
-				            <label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
-				            <input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
-				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
-				            <input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target">
-				            <a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="validateEditBudgetInputs()">Update</a>
+					<form>
+						<div style="padding:10px 20px;">
+							<h3>Edit your budget</h3>
+							<input type="hidden" id = "Myid" for="Myid"></input>
+							<label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
+							<input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
+							<label for="trgt" class="ui-hidden-accessible">Target:</label>
+							<input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target">
+							<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="validateEditBudgetInputs()">Update</a>
 							<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-arrow-l">Cancel</a>	
-				        </div>
-				    </form>
+						</div>
+					</form>
 				</div>
-				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="confirmDeleteBudget()">Delete Budget</a>
-			</div>
 		</div>
 
-   
     </body>
 </html>
