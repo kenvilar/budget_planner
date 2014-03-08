@@ -155,7 +155,7 @@
    					transaction.executeSql('SELECT * FROM BudgetDB;', [],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						html = html + '<ul data-role="listview">';
+      						<!-- html = html + '<ul data-role="listview">'; -->
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
           					
@@ -163,7 +163,7 @@
     					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn ui-corner-all ui-shadow ui-btn-icon-right ui-icon-carat-r">'+row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
-        					html += '</ul>';
+        					<!-- html += '</ul>'; -->
         					$('#Budgets').append(html);
       						}
      					},errorHandler);
@@ -183,8 +183,9 @@
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
       						//<!-- html = html + '<center><h2>Summary</h2><center>'; -->
-      						html = html + '<table style="width:100%" data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">';
+      						html = html + '<table style="width:100%" data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Columns to display..." data-column-popup-theme="a">';
       						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead>';
+							html += '<tbody>';
 							var totalExpenses = 0;
 							
 							var month=new Array();
@@ -207,10 +208,11 @@
 								var myDate = new Date(row.Date);
 								//var newDate = formatDate(myDate,"MMM d, y");
 								totalExpenses += (row.Amount * row.Occurence);
-    					        html += '<tbody><tr>';
+    					        html += '<tr>'
     					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount * row.Occurence + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext" onClick="confirmDeleteExpense(' + row.ExpenseId +')"></a></center></td></a>';
-    					        html += '</tr></tbody>';
+    					        html += '</tr>';
         						}
+							html += '</tbody>';
         					html += '</table>';
 							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
         					$('#viewSummaryPage').append(html);
@@ -932,7 +934,9 @@
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
 						<input type="hidden" id="currentBudgetID">
-						<div id="Budgets"></div>
+						<ul id="Budgets" data-role="listview" data-filter="true" data-filter-placeholder="Search budget name..." data-inset="true">
+							<div id="Budgets"></div>
+						</ul>
 				</div>
   			</div>
 		</div>
@@ -948,8 +952,8 @@
 			<div data-role="content">
 				<p>This is where you will add a new budget</p>
 				<form name="addForm" method="post" onsubmit="AddValueToDB()">
-					<input type="text" placeholder="Budget name" id="txName">
-					<input type="text" placeholder="Income" id="txMoney">
+					<input type="text" placeholder="Budget name" id="txName" data-clear-btn="true">
+					<input type="number" placeholder="Income" id="txMoney" data-clear-btn="true" pattern="[0-9]*">
 					<label for="Target">Target Savings:</label>
 					<input type="range" id="txTarget" min="0">
 					<script>
@@ -995,8 +999,8 @@
 							<option value="Other">Other</option>
     					</select>
   				</fieldset>
-				<input type="text" placeholder="Description" id="txDescription">
-				<input type="text" placeholder="Amount" id="txAmount">
+				<input type="text" placeholder="Description" id="txDescription" data-clear-btn="true">
+				<input type="number" placeholder="Amount" id="txAmount" data-clear-btn="true" pattern="[0-9]*">
 				<fieldset class="ui-field-contain">
     					<label for="occurence">Select frequency</label>
     						<select name="occurence" id="txFrequency">
@@ -1007,12 +1011,12 @@
 									<option value="Other">Other</option>
    						</select>
   					</fieldset> 
-				<input type="text" placeholder="Number of Occurence per month" id="txOccurence" value="4">
+				<input type="number" placeholder="Number of Occurence per month" id="txOccurence" value="4" data-clear-btn="true" pattern="[0-9]*">
 				<script>
 					document.write('<input type="hidden" id="txDate" value="'+ new Date() +'">');
 				</script>	
 				<label for="total">Total</label>			
-				<input name="total" type="text" id="total" value="0" readonly>
+				<input name="total" type="number" id="total" value="0" data-clear-btn="true" pattern="[0-9]*" readonly>
 				<a class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="checkAddExpenseInputs()">Add Expense</a>
 				</form>
 			</div>
