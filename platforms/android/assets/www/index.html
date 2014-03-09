@@ -52,11 +52,22 @@
 		<script src="cdv-plugin-fb-connect.js"></script>
 	    <!-- facebook js sdk -->
 		<script src="facebook-js-sdk.js"></script>
-
+		
+		<!--------for bxslider--------->
+        <link rel="stylesheet" href="http://bxslider.com/lib/jquery.bxslider.css" />        
+        <!--<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>-->
+        <script src="http://bxslider.com/lib/jquery.bxslider.js"></script> 
 
 		<script type="text/javascript" charset="utf-8">	
 
-			$(document).ready(function () {				
+			$(document).ready(function () {
+			
+				<!--For CAROUSEL   -->
+    		$('.bxslider').bxSlider({
+        		slideMargin: 10
+    		});
+
+				<!--               -->			
 				
 				$('#txMoney').keyup(function () {
 					$('#txTarget').val($('#txMoney').val()/2);
@@ -102,10 +113,6 @@
 				
 				
 			});
-			
-				
-			
-			
 
 			var db;
 			var shortName = 'BudgetDB';
@@ -973,7 +980,23 @@
 			<div data-role="header" data-theme="b" data-poistion="fixed">
     			<h1>Home</h1>
   			</div>
+  			
+  			<!------------------CAROUSEL FOR ADDSPACE----------------------------->
+            <div data-theme="b" data-position="fixed" data-fullscreen="true">
+                <div class="slider">
+                    <ul class="bxslider">
+                        <li><img src="http://bxslider.com/images/730_200/trees.jpg" /></li>
+                        <li><img src="http://bxslider.com/images/730_200/tree_root.jpg" /></li>
+                        <li><img src="http://bxslider.com/images/730_200/houses.jpg" /></li>
+                        <li><img src="http://bxslider.com/images/730_200/hill_road.jpg" /></li>
+                        <li><img src="http://bxslider.com/images/730_200/me_trees.jpg" /></li>
+                        <li><img src="http://bxslider.com/images/730_200/hill_trees.jpg" /></li>
+                    </ul></div>
+            </div>
+  			<!-------------------------ADDSPACE END HERE-------------------------->
+  			
 			<div data-role="content">
+  			
   				<a href="#addBudget" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
@@ -983,6 +1006,7 @@
 						</ul>
 				</div>
   			</div>
+  			
 		</div>
 
 		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
