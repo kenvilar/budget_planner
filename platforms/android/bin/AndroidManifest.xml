@@ -36,7 +36,7 @@
             android:label="Budget List" >
         </activity>
         <activity
-            android:name="EditBudget"
+            android:name="EditBudget" 
             android:label="Edit Information" >
         </activity>
     </application>
