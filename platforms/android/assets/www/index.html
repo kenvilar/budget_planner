@@ -64,6 +64,7 @@
 			
 				<!--For CAROUSEL   -->
     		$('.bxslider').bxSlider({
+    			slideWidth: 360,
         		slideMargin: 10
     		});
 
@@ -226,7 +227,7 @@
         						}
 							html += '</tbody>';
         					html += '</table>';
-							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
+							html += '<center><h3><font color="white">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
         					$('#viewSummaryPage').append(html);
       						}
      					},errorHandler);
@@ -1020,25 +1021,12 @@
 			<div data-role="header" data-theme="b" data-poistion="fixed">
     			<h1>Home</h1>
   			</div>
-  			
-  			<!------------------CAROUSEL FOR ADDSPACE----------------------------->
-            <div data-theme="b" data-position="fixed" data-fullscreen="true">
-                <div class="slider">
-                    <ul class="bxslider">
-                        <li><img src="http://bxslider.com/images/730_200/trees.jpg" /></li>
-                        <li><img src="http://bxslider.com/images/730_200/tree_root.jpg" /></li>
-                        <li><img src="http://bxslider.com/images/730_200/houses.jpg" /></li>
-                        <li><img src="http://bxslider.com/images/730_200/hill_road.jpg" /></li>
-                        <li><img src="http://bxslider.com/images/730_200/me_trees.jpg" /></li>
-                        <li><img src="http://bxslider.com/images/730_200/hill_trees.jpg" /></li>
-                    </ul></div>
-            </div>
-  			<!-------------------------ADDSPACE END HERE-------------------------->
-  			
-  			<!---MORE FOR HERE--->
-  			<div data-role="collapsible" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
-				<h3>About Budget Planner</h3>
-				<img src = 'img/Piggy.gif' align = "middle">
+  			  			<!---MORE FOR HERE--->
+  			<!--<div style="background-color:black" data-role="collapsible" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
+			-->
+			<div style="color:white" align="center">
+				<h3>Budget Planner</h3>
+				<img src = 'img/Piggy1.PNG' align = "middle" width = "320">
 			</div>
   			
   			<!--------------------------------->
@@ -1054,6 +1042,17 @@
 				</div>
   			</div>
   			
+  			<!------------------CAROUSEL FOR ADDSPACE----------------------------->
+            <!--<div data-theme="b" data-position="fixed" data-fullscreen="true">-->
+            <div style="background-color:black">
+                <div class="slider">
+                    <ul class="bxslider">
+                        <li><img src="img/Carousel1.png" /></li>
+                        <li><img src="img/Carousel2.png" /></li>
+                    </ul></div>
+            </div>
+  			<!-------------------------ADDSPACE END HERE-------------------------->
+  			
 		</div>
 
 		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
@@ -1064,7 +1063,7 @@
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Budget</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" style="color:white">
 				<p>This is where you will add a new budget</p>
 				<form name="addForm" method="post" onsubmit="AddValueToDB()">
 					<input type="text" placeholder="Budget name" id="txName" data-clear-btn="true">
@@ -1086,7 +1085,7 @@
 			</div>
 			<br>
 			<input type="hidden" id = "MyExpenseId" for="MyExpenseId"></input>
-			<div id="viewSummaryPage"></div>
+			<div id="viewSummaryPage" style="color:white"></div>
 		</div>
 		
 		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
@@ -1097,7 +1096,7 @@
 				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Expense</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" style="color:white">
 				<p id="recommendedExpense"></p>
 				<input type="hidden" id="hiddenRecommendedExpenseMonthly" value="0">
 
@@ -1145,7 +1144,7 @@
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Edit Budget</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" style="color:white">
 				<center>
 					<a id="facebook_login" onClick="fb_publish();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
 					<div id="fb-root"></div>
