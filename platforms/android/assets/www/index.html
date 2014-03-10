@@ -327,7 +327,7 @@
 						message = "The Target saving is the same with your income";
 						break;
 					case 9:
-						message = "Please type in a Valid number";
+						message = "Please type in a valid number";
 						break;
 					case 10:
 						message = "Please type in the Description of your expense";
@@ -1066,7 +1066,7 @@
 				<p>This is where you will add a new budget</p>
 				<form name="addForm" method="post" onsubmit="AddValueToDB()">
 					<input type="text" placeholder="Budget name" id="txName" data-clear-btn="true">
-					<input type="number" placeholder="Income" id="txMoney" data-clear-btn="true" pattern="[0-9]*">
+					<input type="text" placeholder="Income" id="txMoney" data-clear-btn="true">
 					<label for="Target">Target Savings:</label>
 					<input type="range" id="txTarget" min="0">
 					<script>
@@ -1113,7 +1113,7 @@
     					</select>
   				</fieldset>
 				<input type="text" placeholder="Description" id="txDescription" data-clear-btn="true">
-				<input type="number" placeholder="Amount" id="txAmount" data-clear-btn="true" pattern="[0-9]*">
+				<input type="text" placeholder="Amount" id="txAmount" data-clear-btn="true">
 				<fieldset class="ui-field-contain">
     					<label for="occurence">Select frequency</label>
     						<select name="occurence" id="txFrequency">
@@ -1172,9 +1172,9 @@
 							<h3>Edit your budget</h3>
 							<input type="hidden" id = "Myid" for="Myid"></input>
 							<label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
-							<input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
+							<input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a" data-clear-btn="true">
 							<label for="trgt" class="ui-hidden-accessible">Target:</label>
-							<input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target">
+							<input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target" data-clear-btn="true">
 							<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="validateEditBudgetInputs()">Update</a>
 							<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-arrow-l">Cancel</a>	
 						</div>
