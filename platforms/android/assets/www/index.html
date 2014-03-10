@@ -942,27 +942,67 @@
 			}(document, 'script', 'facebook-jssdk'));
 			
 			function fb_publish() {
-				FB.ui(
-				   {
-						method: 'feed',
-						redirect_uri: 'http://goo.gl/tQcC3C',
-						name: 'Testing the budget planner!',
-						caption: 'Mobile Budget Planner',
-						description: (
-							'Budget Planner is a mobile budget planning application that will help you manage your expenses by putting up your target ' + 
-							'budget. It is designed to improve your set of financial goals based on your personal income and expenses.'
-						),
-						link: 'http://goo.gl/tQcC3C',
-						picture: 'http://lh3.googleusercontent.com/-ql0DmSYCp_k/UxssbL4tAVI/AAAAAAAAANY/YBFBqveumsg/w390-h366-no/budget+planner+21.png'
-					},
-					function(response) {
-						if (response && response.post_id) {
-							console.log('Post was published.');
-						} else {
-					   console.log('Post was not published.');
-						}
-					}
-				);  
+				var id = $('#Myid').val();
+				var totalMoney;
+				var targetSavings;
+				var totalExpense = 0;
+				var monthlyBudgetLeft;
+				
+				db.transaction(function(transaction) {
+					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB WHERE BudgetId = ?;', [id],
+						function(transaction, result) {
+							if (result != null && result.rows != null) {
+								for (var i = 0; i < result.rows.length; i++) {
+									var row = result.rows.item(i);
+									totalMoney = row.Money;
+									targetSavings = row.Target;
+									$('#Myid').val(row.BudgetId);
+								}
+							}
+						},errorHandler);
+				},errorHandler,nullHandler);
+				
+				db.transaction(function(transaction) {
+					transaction.executeSql('SELECT * FROM Expense WHERE Budget = ?;', [id],
+						function(transaction, result) {
+							if (result != null && result.rows != null) {
+								for (var i = 0; i < result.rows.length; i++) {
+									var row = result.rows.item(i);
+									totalExpense = totalExpense + (row.Amount * row.Occurence);
+								}
+								monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
+								$('#hiddenRecommendedExpenseMonthly').val(monthlyBudgetLeft);
+								shareSaved = monthlyBudgetLeft.toFixed(2);
+								$('#currentBudgetID').val(id);
+								FB.ui(
+								   {
+										method: 'feed',
+										redirect_uri: 'http://goo.gl/tQcC3C',
+										name: 'I just saved ₱' + shareSaved + ' using mobile budget planner.',
+										caption: 'Try Budget Planner now!',
+										description: (
+											'Budget Planner is a mobile application that will help you easily keep track of your finances. ' + 
+											'It was designed to improve your set of financial goals based on your personal income and expenses.'
+										),
+										actions: [
+											{ name: 'Budget Planner', link: 'http://goo.gl/tQcC3C' }
+										],
+										properties:{
+											" ": {"text": "Budget Money: ₱" + totalMoney + " ,  Budget Target: ₱" + targetSavings,"href":"http://goo.gl/tQcC3C"} 
+										},
+										link: 'http://goo.gl/tQcC3C'
+									},
+									function(response) {
+										if (response && response.post_id) {
+											console.log('Post was published.');
+										} else {
+											console.log('Post was not published.');
+										}
+									}
+								); 
+							}
+						},errorHandler);
+				},errorHandler,nullHandler);
 			}
 
 		</script>
