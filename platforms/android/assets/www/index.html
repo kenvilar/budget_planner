@@ -152,7 +152,6 @@
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
  				ListDBValues();
- 				GetName(id);
 			}
 
 			function ListDBValues() {
@@ -1125,12 +1124,12 @@
 									<option value="Other">Other</option>
    						</select>
   					</fieldset> 
-				<input type="number" placeholder="Number of Occurence per month" id="txOccurence" value="4" data-clear-btn="true" pattern="[0-9]*">
+				<input type="text" placeholder="Number of Occurence per month" id="txOccurence" value="4">
 				<script>
 					document.write('<input type="hidden" id="txDate" value="'+ new Date() +'">');
 				</script>	
 				<label for="total">Total</label>			
-				<input name="total" type="number" id="total" value="0" data-clear-btn="true" pattern="[0-9]*" readonly>
+				<input name="total" type="text" id="total" value="0" readonly>
 				<a class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="checkAddExpenseInputs()">Add Expense</a>
 				</form>
 			</div>
