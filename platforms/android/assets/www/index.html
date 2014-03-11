@@ -875,7 +875,7 @@
 				var id = $('#Myid').val();
 					db.transaction(function(transaction) {
 						transaction.executeSql(
-								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
+								'SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id]);
 					});
 				ListDBValues();
 				GetName(id);
@@ -929,7 +929,9 @@
 				FB.init({
 					appId      : '553068804738984',
 					status     : true,
-					xfbml      : true
+					xfbml      : true,
+					oauth	   : true,
+					cookie    : true
 				});
 			};
 
@@ -979,10 +981,11 @@
 										method: 'feed',
 										redirect_uri: 'http://goo.gl/tQcC3C',
 										name: 'I just saved ₱' + shareSaved + ' using mobile budget planner.',
+										picture: 'http://goo.gl/xBxp8Y',
 										caption: 'Try Budget Planner now!',
 										description: (
-											'Budget Planner is a mobile application that will help you easily keep track of your finances. ' + 
-											'It was designed to improve your set of financial goals based on your personal income and expenses.'
+											'Budget Planner is a mobile application that will easily keep track of your finances' + 
+											' based on your personal income and expenses.'
 										),
 										actions: [
 											{ name: 'Budget Planner', link: 'http://goo.gl/tQcC3C' }
@@ -1003,6 +1006,9 @@
 							}
 						},errorHandler);
 				},errorHandler,nullHandler);
+				
+				$.mobile.changePage("index.html#mainpage");
+				return;
 			}
 
 		</script>
