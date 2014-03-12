@@ -43,12 +43,36 @@
 		<link rel="stylesheet" type="text/css" href="noty/css/buttons.css">
 		<script type="text/javascript" src="noty/js/noty/themes/default.js"></script>
 
-
-
+		<!-- Facebook login auth -->
+		<script type="text/javascript" src="js/oauth.js"></script>
+		<script type="text/javascript" src="js/facebook.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		
+	    <!-- cordova facebook plugin -->
+		<script src="cdv-plugin-fb-connect.js"></script>
+	    <!-- facebook js sdk -->
+		<script src="facebook-js-sdk.js"></script>
+		
+		<!--------for bxslider--------->
+        <!--<link rel="stylesheet" href="http://bxslider.com/lib/jquery.bxslider.css" />        
+        <script src="http://bxslider.com/lib/jquery.bxslider.js"></script> -->
+                
+		<!-- jQuery library (served from Google) -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<!-- bxSlider Javascript file -->
+		<script src="jquery.bxslider/jquery.bxslider.min.js"></script>
+		<!-- bxSlider CSS file -->
+		<link href="jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
 
 		<script type="text/javascript" charset="utf-8">	
 
-			$(document).ready(function () {				
+			$(document).ready(function () {
+			
+				<!--For CAROUSEL   -->
+    		$('.bxslider').bxSlider({
+    		});
+
+				<!--               -->			
 				
 				$('#txMoney').keyup(function () {
 					$('#txTarget').val($('#txMoney').val()/2);
@@ -94,10 +118,6 @@
 				
 				
 			});
-			
-				
-			
-			
 
 			var db;
 			var shortName = 'BudgetDB';
@@ -136,7 +156,6 @@
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
  				ListDBValues();
- 				GetName(id);
 			}
 
 			function ListDBValues() {
@@ -152,7 +171,7 @@
    					transaction.executeSql('SELECT * FROM BudgetDB;', [],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						html = html + '<ul data-role="listview">';
+      						<!-- html = html + '<ul data-role="listview">'; -->
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
           					
@@ -160,7 +179,7 @@
     					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn ui-corner-all ui-shadow ui-btn-icon-right ui-icon-carat-r">'+row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
-        					html += '</ul>';
+        					<!-- html += '</ul>'; -->
         					$('#Budgets').append(html);
       						}
      					},errorHandler);
@@ -170,7 +189,6 @@
 			}
 			
 			function viewSummary() {
- 
  				html = '';
  				$('#viewSummaryPage').html('');
  				
@@ -181,8 +199,9 @@
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
       						//<!-- html = html + '<center><h2>Summary</h2><center>'; -->
-      						html = html + '<table style="width:100%" data-role="table" id="temp-table" data-mode="reflow" class="ui-responsive table-stroke">';
-      						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr><th></th></thead>';
+      						html = html + '<table style="width:100%" data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Columns to display..." data-column-popup-theme="a">';
+      						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead>';
+							html += '<tbody>';
 							var totalExpenses = 0;
 							
 							var month=new Array();
@@ -204,13 +223,14 @@
 								
 								var myDate = new Date(row.Date);
 								//var newDate = formatDate(myDate,"MMM d, y");
-								totalExpenses += row.Amount;
-    					        html += '<tbody><tr>';
-    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all" onClick="confirmDeleteExpense(' + row.ExpenseId +')">Delete Expense</a></center></td></a>';
-    					        html += '</tr></tbody>';
+								totalExpenses += (row.Amount * row.Occurence);
+    					        html += '<tr>'
+    					        html += '<a><td><center>' + month[myDate.getMonth()] +'-'+myDate.getDate()+'-'+myDate.getFullYear()+ '</center></td> <td><center>'+ row.Description +'</center></td> <td><center>' + row.Category + '</center></td> <td><center>' + row.Amount * row.Occurence + '</center></td><td><center><a class="ui-btn ui-btn-b ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext" onClick="confirmDeleteExpense(' + row.ExpenseId +')"></a></center></td></a>';
+    					        html += '</tr>';
         						}
+							html += '</tbody>';
         					html += '</table>';
-							html += '<center><h3><font color="">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
+							html += '<center><h3><font color="white">Total Expenses: ₱'+ totalExpenses +'</font></h3></center>';
         					$('#viewSummaryPage').append(html);
       						}
      					},errorHandler);
@@ -311,7 +331,7 @@
 						message = "The Target saving is the same with your income";
 						break;
 					case 9:
-						message = "Please type in a Valid number";
+						message = "Please type in a valid number";
 						break;
 					case 10:
 						message = "Please type in the Description of your expense";
@@ -479,8 +499,8 @@
 					'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()], nullHandler, errorHandler);
 				});
 					//alert("Added successfully!");
-					window.history.back();
-					
+					//window.history.back();
+				$.mobile.changePage("index.html#mainpage");
 				ListDBValues();
 				alertSuccess(1);
 				GetName(id);
@@ -859,38 +879,35 @@
 				var id = $('#Myid').val();
 					db.transaction(function(transaction) {
 						transaction.executeSql(
-								'SELECT * BudgetDB WHERE Budgetid = ?;', [id]);
+								'SELECT * FROM BudgetDB WHERE BudgetId = ?;', [id]);
 					});
-				window.location.assign("index.html#editBudget");
 				ListDBValues();
 				GetName(id);
-				return;
+				<!-- window.location.assign("index.html#editBudget"); -->
+				$.mobile.changePage("index.html#editBudget");
+				return false;
 			}
 	
 			function confirmedDeleteBudget() {
 				var id = $('#Myid').val();
-
 					db.transaction(function(transaction) {
 						transaction.executeSql(
 								'DELETE FROM BudgetDB WHERE BudgetId = ?;',
 								[id],
 								nullHandler, errorHandler);
 					});
-
 					db.transaction(function(transaction) {
 						transaction.executeSql(
 								'DELETE FROM Expense WHERE Budget = ?;',
 								[id],
 								nullHandler, errorHandler);
 					});
-					alertSuccess(4);
-					window.location.assign("index.html#mainpage");
-					
 					ListDBValues();
 					GetName(id);
-					
+					alertSuccess(4);
+					<!-- window.location.assign("index.html#mainpage"); -->
+					$.mobile.changePage("index.html#mainpage");
 					return false;
-					
 			}
 
 			
@@ -911,7 +928,92 @@
 				$.mobile.changePage("index.html#editBudget");
 				return;
 			}
+			
+			window.fbAsyncInit = function() {
+				FB.init({
+					appId      : '553068804738984',
+					status     : true,
+					xfbml      : true,
+					oauth	   : true,
+					cookie    : true
+				});
+			};
 
+			(function(d, s, id){
+				 var js, fjs = d.getElementsByTagName(s)[0];
+				 if (d.getElementById(id)) {return;}
+				 js = d.createElement(s); js.id = id;
+				 js.src = "//connect.facebook.net/en_US/all.js";
+				 fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+			
+			function fb_publish() {
+				var id = $('#Myid').val();
+				var totalMoney;
+				var targetSavings;
+				var totalExpense = 0;
+				var monthlyBudgetLeft;
+				
+				db.transaction(function(transaction) {
+					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB WHERE BudgetId = ?;', [id],
+						function(transaction, result) {
+							if (result != null && result.rows != null) {
+								for (var i = 0; i < result.rows.length; i++) {
+									var row = result.rows.item(i);
+									totalMoney = row.Money;
+									targetSavings = row.Target;
+									$('#Myid').val(row.BudgetId);
+								}
+							}
+						},errorHandler);
+				},errorHandler,nullHandler);
+				
+				db.transaction(function(transaction) {
+					transaction.executeSql('SELECT * FROM Expense WHERE Budget = ?;', [id],
+						function(transaction, result) {
+							if (result != null && result.rows != null) {
+								for (var i = 0; i < result.rows.length; i++) {
+									var row = result.rows.item(i);
+									totalExpense = totalExpense + (row.Amount * row.Occurence);
+								}
+								monthlyBudgetLeft = (totalMoney - targetSavings) - totalExpense;
+								$('#hiddenRecommendedExpenseMonthly').val(monthlyBudgetLeft);
+								shareSaved = monthlyBudgetLeft.toFixed(2);
+								$('#currentBudgetID').val(id);
+								FB.ui(
+								   {
+										method: 'feed',
+										redirect_uri: 'http://goo.gl/tQcC3C',
+										name: 'I just saved ₱' + shareSaved + ' using mobile budget planner.',
+										picture: 'http://goo.gl/xBxp8Y',
+										caption: 'Try Budget Planner now!',
+										description: (
+											'Budget Planner is a mobile application that will easily keep track of your finances' + 
+											' based on your personal income and expenses.'
+										),
+										actions: [
+											{ name: 'Budget Planner', link: 'http://goo.gl/tQcC3C' }
+										],
+										properties:{
+											" ": {"text": "Budget Money: ₱" + totalMoney + " ,  Budget Target: ₱" + targetSavings,"href":"http://goo.gl/tQcC3C"} 
+										},
+										link: 'http://goo.gl/tQcC3C'
+									},
+									function(response) {
+										if (response && response.post_id) {
+											console.log('Post was published.');
+										} else {
+											console.log('Post was not published.');
+										}
+									}
+								); 
+							}
+						},errorHandler);
+				},errorHandler,nullHandler);
+				
+				$.mobile.changePage("index.html#mainpage");
+				return;
+			}
 
 		</script>
 
@@ -921,71 +1023,60 @@
 
     <body onload="onBodyLoad()">
     
-    	<div id="fb-root"></div>
-		<script>
-			(function(d, s, id) {
-			  var js, fjs = d.getElementsByTagName(s)[0];
-			  if (d.getElementById(id)) return;
-			  js = d.createElement(s); js.id = id;
-			  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=1382388548666955";
-			  fjs.parentNode.insertBefore(js, fjs);
-			}(document, 'script', 'facebook-jssdk'));
-		</script>
-    
    		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																													   background-attachment: fixed; 
 																													   background-repeat: repeat; 
-																													   background-size: 100% 100%;">
-
-		<div data-role="page" id="moneySaved">
-			I SAVED THIS MUCH USING MOBILE BUDGET PLANNER
-		</div>
-
-			<div data-role="header">
+																													   background-size: 100%;">
+			<div data-role="header" data-theme="b" data-poistion="fixed">
     			<h1>Home</h1>
   			</div>
+  			  			<!---MORE FOR HERE--->
+  			<!--<div style="background-color:black" data-role="collapsible" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
+			-->
+			<div style="color:white" align="center">
+				<h3>Budget Planner</h3>
+				<img src = 'img/Piggy1.PNG' align = "middle" width = "320">
+			</div>
+  			
+  			<!--------------------------------->
 			<div data-role="content">
-  				<a href="#addBudget" data-role="button" onClick="clearAddBudgetField()">Add Budget</a>
+  			
+  				<a href="#addBudget" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
 						<input type="hidden" id="currentBudgetID">
-						<div id="Budgets"></div>
+						<ul id="Budgets" data-role="listview" data-filter="true" data-filter-placeholder="Search budget name..." data-inset="true">
+							<div id="Budgets"></div>
+						</ul>
 				</div>
   			</div>
-  			<!-------------FACEBOOK-------------------->
-  			<!-- <div data-role ="content">MyMoneyHidden
-  				<a href="#facebookConnect" data-role="button" onClick="connectToFacebook()">
-  				Share to Facebook</a>
-  			</div> -->
-  			<!------------------------------------------>
+  			
+  			<!------------------CAROUSEL FOR ADDSPACE----------------------------->
+            <!--<div data-theme="b" data-position="fixed" data-fullscreen="true">-->
+            <div>
+                <div class="slider">
+                    <ul class="bxslider">
+                        <li><img src="img/Carousel1.png" /></li>
+                        <li><img src="img/Carousel2.png" /></li>
+                    </ul></div>
+            </div>
+  			<!-------------------------ADDSPACE END HERE-------------------------->
+  			
 		</div>
-		
-		<!-------------------------FACEBOOK---------------------------------->
-		<div data-role="page" id="facebookConnect">
-			<div data-role="header">
-				<h1>Login</h1>
-			</div>
-			<div data-role="content">
-			<input type="text" placeholder="Username" id="txFbUsername">
-			<input type="text" placeholder="Password" id="txFbPasword">
-			<a href="#mainpage" class="ui-btn" onclick="">Login</a> 
-			<a href="#mainpage" class="ui-btn">Back</a>
-			</div>
-		</div>
-		<!------------------------------------------------------------------->
 
 		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																													    background-attachment: fixed; 
 																													    background-repeat: repeat; 
-																													    background-size: 100% 100%;">
-			<div data-role="header">
+																													    background-size: 100%;">
+			<div data-role="header" data-theme="b">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Budget</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" style="color:white">
 				<p>This is where you will add a new budget</p>
 				<form name="addForm" method="post" onsubmit="AddValueToDB()">
-					<input type="text" placeholder="Budget name" id="txName">
-					<input type="text" placeholder="Income" id="txMoney">
+					<input type="text" placeholder="Budget name" id="txName" data-clear-btn="true">
+					<input type="text" placeholder="Income" id="txMoney" data-clear-btn="true">
 					<label for="Target">Target Savings:</label>
 					<input type="range" id="txTarget" min="0">
 					<script>
@@ -993,31 +1084,28 @@
 					</script>
 					<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="checkAddBudgetInputs()">Add Budget</a>
 				</form>
-				<br>
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
 		</div>
 
-		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg');background-attachment: fixed;background-repeat: repeat; background-size: 100% 100%;">
-			<div data-role="header">
-				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
+		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg');background-attachment: fixed;background-repeat: repeat; background-size: 100%;">
+			<div data-role="header" data-theme="b">
+				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Summary</h1>
 			</div>
 			<br>
 			<input type="hidden" id = "MyExpenseId" for="MyExpenseId"></input>
-			<div id="viewSummaryPage"></div>
-			<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
+			<div id="viewSummaryPage" style="color:white"></div>
 		</div>
 		
 		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
 																							background-attachment: fixed; 
 																							background-repeat: repeat; 
-																							background-size: 100% 100%;">
-			<div data-role="header">
-				<a href="#mainpage" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-home">Home</a>
+																							background-size: 100%;">
+			<div data-role="header" data-theme="b">
+				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Expense</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" style="color:white">
 				<p id="recommendedExpense"></p>
 				<input type="hidden" id="hiddenRecommendedExpenseMonthly" value="0">
 
@@ -1034,14 +1122,16 @@
 							<option value="Other">Other</option>
     					</select>
   				</fieldset>
-				<input type="text" placeholder="Description" id="txDescription">
-				<input type="text" placeholder="Amount" id="txAmount">
+				<input type="text" placeholder="Description" id="txDescription" data-clear-btn="true">
+				<input type="text" placeholder="Amount" id="txAmount" data-clear-btn="true">
 				<fieldset class="ui-field-contain">
     					<label for="occurence">Select frequency</label>
     						<select name="occurence" id="txFrequency">
-      							<option selected="selected" value="4">Weekly</option>
-      							<option value="1">Monthly</option>
-      							<option value="Other">Other</option>
+								<optgroup label="">
+									<option selected="selected" value="4">Weekly</option>
+									<option value="1">Monthly</option>
+								<optgroup label="Custom per Month">
+									<option value="Other">Other</option>
    						</select>
   					</fieldset> 
 				<input type="text" placeholder="Number of Occurence per month" id="txOccurence" value="4">
@@ -1050,54 +1140,57 @@
 				</script>	
 				<label for="total">Total</label>			
 				<input name="total" type="text" id="total" value="0" readonly>
-				<a class="ui-btn" onClick="checkAddExpenseInputs()">Add Expense</a>
+				<a class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="checkAddExpenseInputs()">Add Expense</a>
 				</form>
-				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
 		</div>
 		
 		<div data-role="page" id="editBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																														background-attachment: fixed; 
 																														background-repeat: repeat; 
-																														background-size: 100% 100%;">
-			<div data-role="header">
+																														background-size: 100%;">
+			<div data-role="header" data-theme="b">
+				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Edit Budget</h1>
 			</div>
-			<div data-role="content">
-				<a href="http://goo.gl/XPaG5Y" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
-				<b>Budget Name: <small id="MyName"></small></b><br>
-				<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
-				<b>Target: ₱<small id="MyTarget"></small></b>
-				<br>
-				<br>
+			<div data-role="content" style="color:white">
 				<center>
+					<a id="facebook_login" onClick="fb_publish();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
+					<div id="fb-root"></div>
+					<div id="log"></div>
+					<b>Budget Name: <small id="MyName"></small></b><br>
+					<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
+					<b>Target: ₱<small id="MyTarget"></small></b>
+					<br>
 					<h3>Estimated Daily Budget: </h3><div id="dailyBudget"></div>
 					<h3>Remaining Monthly Budget: </h3><div id="monthlyBudget"></div>
 				</center>
-				<a href="#addExpensePage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-plus ui-btn-b" onClick="clearAddExpenseField()">Add Expense</a>
-				<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left  ui-icon-grid ui-btn-b" onCLick="viewSummary()">Summary</a>
-				<a href="#mainpage" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back ui-btn-b">Back</a>
 			</div>
-			<div data-role="footer" data-theme="b" data-position="fixed" style="text-align:center;">
-				<a href="#popupedit" data-rel="popup" data-position-to="window" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left ui-btn-b" data-transition="none" onClick="clearEditBudgetField()">Edit Budget</a>
+			<div data-role="footer" data-position="fixed" data-theme="b">
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#popupedit" data-rel="popup" data-position-to="window" data-icon="edit" data-transition="none" onClick="clearEditBudgetField()">Edit Budget</a></li>
+						<li><a data-icon="delete" onClick="confirmDeleteBudget()">Delete Budget</a></li>
+						<li><a href="#addExpensePage" data-icon="plus" onClick="clearAddExpenseField()">Add Expense</a></li>
+						<li><a data-icon="grid" onCLick="viewSummary()">Summary</a></li>
+					</ul>
+				</div>	
+			</div>
 				<div data-role="popup" id="popupedit" data-theme="a" class="ui-corner-all">
-				    <form>
-				        <div style="padding:10px 20px;">
-				            <h3>Edit your budget</h3>
-				            <input type="hidden" id = "Myid" for="Myid"></input>
-				            <label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
-				            <input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a">
-				            <label for="trgt" class="ui-hidden-accessible">Target:</label>
-				            <input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target">
-				            <a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="validateEditBudgetInputs()">Update</a>
+					<form>
+						<div style="padding:10px 20px;">
+							<h3>Edit your budget</h3>
+							<input type="hidden" id = "Myid" for="Myid"></input>
+							<label for="bdgtnm" class="ui-hidden-accessible">Budget Name:</label>
+							<input type="text" name="budget_name" id="bdgtnm" value="" placeholder="budget name" data-theme="a" data-clear-btn="true">
+							<label for="trgt" class="ui-hidden-accessible">Target:</label>
+							<input type="text" name="budget_target" id="trgt" value="" data-theme="a" placeholder="target" data-clear-btn="true">
+							<a class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-edit" onClick="validateEditBudgetInputs()">Update</a>
 							<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-btn-b ui-icon-arrow-l">Cancel</a>	
-				        </div>
-				    </form>
+						</div>
+					</form>
 				</div>
-				<a href="#editBudget" class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-delete ui-btn-b" onClick="confirmDeleteBudget()">Delete Budget</a>
-			</div>
 		</div>
 
-   
     </body>
 </html>
