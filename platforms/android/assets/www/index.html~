@@ -125,38 +125,7 @@
 			var displayName = 'BudgetDB';
 			var maxSize = 200;
 
-			function errorHandler(transaction, error) {
-   				alert('Error: ' + error.message + ' code: ' + error.code);
-			}
-
-			function successCallBack() {
-   				alert("DEBUGGING: success");
- 			}
-
-			function nullHandler(){};
-
-			function onBodyLoad(){
- 				//alert("DEBUGGING: we are in the onBodyLoad() function");
- 				if (!window.openDatabase) {
-   					alert('Databases are not supported in this browser.');
-   				return;
- 				}
- 
- 				db = openDatabase(shortName, version, displayName,maxSize);
- 	 			db.transaction(function(tx){
-
- 				// Kung ganahan ta ug create-drop na db
-  				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
-
-
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date Date NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
-				
-				db.transaction(function(tx){
-
- 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
-				
- 				ListDBValues();
-			}
+			function errorHandler(e,t){alert("Error: "+t.message+" code: "+t.code)}function successCallBack(){alert("DEBUGGING: success")}function nullHandler(){}function onBodyLoad(){if(!window.openDatabase){alert("Databases are not supported in this browser.");return}db=openDatabase(shortName,version,displayName,maxSize);db.transaction(function(e){e.executeSql("CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date Date NOT NULL)",[],nullHandler,errorHandler)},errorHandler,nullHandler);db.transaction(function(e){e.executeSql("CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)",[],nullHandler,errorHandler)},errorHandler,nullHandler);ListDBValues()}
 
 			function ListDBValues() {
  				if (!window.openDatabase) {
@@ -484,8 +453,22 @@
 			}
 
 			function clearEditBudgetField(){
-				$('#bdgtnm').val('');
-				$('#trgt').val('');
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB;', [],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          						$('#bdgtnm').append(row.Name);
+								$('#bdgtnm').val(row.Name);
+								$('#trgt').append(row.Target);
+								$('#trgt').val(row.Target);
+        					}
+      					}
+     				},errorHandler);
+ 				},errorHandler,nullHandler);
+				
+				return;
 			}
 
 			function AddValueToDB() {
@@ -623,11 +606,11 @@
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
           						$('#MyMoney').append(row.Money);
-							$('#MyMoney').append('<input type="hidden" id="MyMoneyHidden" value="'+ row.Money +'">');
-							budgetDate = new Date(row.Date);
-							lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
-							totalMoney = row.Money;
-							targetSavings = row.Target;
+								$('#MyMoney').append('<input type="hidden" id="MyMoneyHidden" value="'+ row.Money +'">');
+								budgetDate = new Date(row.Date);
+								lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
+								totalMoney = row.Money;
+								targetSavings = row.Target;
           						$('#MyTarget').append(row.Target);
           						$('#Myid').append(row.BudgetId);
           						$('#Myid').val(row.BudgetId);
@@ -1026,7 +1009,7 @@
    		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																													   background-attachment: fixed; 
 																													   background-repeat: repeat; 
-																													   background-size: 100%;">
+																													   background-size: 100% 100%;">
 			<div data-role="header" data-theme="b" data-poistion="fixed">
     			<h1>Home</h1>
   			</div>
@@ -1067,7 +1050,7 @@
 		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																													    background-attachment: fixed; 
 																													    background-repeat: repeat; 
-																													    background-size: 100%;">
+																													    background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Budget</h1>
@@ -1087,7 +1070,7 @@
 			</div>
 		</div>
 
-		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg');background-attachment: fixed;background-repeat: repeat; background-size: 100%;">
+		<div data-role="page" id="SummaryPage" style="background-image: url('img/bg.jpg');background-attachment: fixed;background-repeat: repeat; background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Summary</h1>
@@ -1100,7 +1083,7 @@
 		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
 																							background-attachment: fixed; 
 																							background-repeat: repeat; 
-																							background-size: 100%;">
+																							background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Expense</h1>
@@ -1148,7 +1131,7 @@
 		<div data-role="page" id="editBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
 																														background-attachment: fixed; 
 																														background-repeat: repeat; 
-																														background-size: 100%;">
+																														background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Edit Budget</h1>
