@@ -1,25 +1,12 @@
 <!DOCTYPE html>
-
-
 <html>
-	<!-----head for facebook story read------->
-     <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# profile: http://ogp.me/ns/profile#">
- 		<meta property="fb:app_id" content="1382388548666955" /> 
-		<meta property="og:type"   content="profile" /> 
-	  	<meta property="og:url"    content="#moneySaved" /> <!----Put URL to the object here---->
-		<meta property="og:title"  content="I saved this much" /> <!---- Put title here ----->
-		<meta property="og:image"  content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png" /> 
-	        <meta charset="utf-8" />
-	        <meta name="format-detection" content="telephone=no">
-	<!----------Kutob Diari----------->
 
+     <head >
+	    <meta charset="utf-8" />
+	    <meta name="format-detection" content="telephone=no">
 
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        
-        <!-- <link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1.min.css">
-		<script type="text/javascript" src="jquery.mobile-1.4.1.min.js"></script>
-		<script type="text/javascript" src="jquery-2.1.0.min.js"></script> -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 
 		<link rel="stylesheet" type="text/css" href="jquery.mobile-1.4.1/jquery.mobile-1.4.1.min.css">
 		<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
@@ -47,16 +34,11 @@
 		<script type="text/javascript" src="js/oauth.js"></script>
 		<script type="text/javascript" src="js/facebook.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
-		
 	    <!-- cordova facebook plugin -->
 		<script src="cdv-plugin-fb-connect.js"></script>
 	    <!-- facebook js sdk -->
 		<script src="facebook-js-sdk.js"></script>
-		
-		<!--------for bxslider--------->
-        <!--<link rel="stylesheet" href="http://bxslider.com/lib/jquery.bxslider.css" />        
-        <script src="http://bxslider.com/lib/jquery.bxslider.js"></script> -->
-                
+        
 		<!-- jQuery library (served from Google) -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 		<!-- bxSlider Javascript file -->
@@ -68,11 +50,8 @@
 
 			$(document).ready(function () {
 			
-				<!--For CAROUSEL   -->
-    		$('.bxslider').bxSlider({
-    		});
-
-				<!--               -->			
+				$('.bxslider').bxSlider({
+				});		
 				
 				$('#txMoney').keyup(function () {
 					$('#txTarget').val($('#txMoney').val()/2);
@@ -85,7 +64,6 @@
 
 				$('#txOccurence').hide();
 				
-	
 				$('#txFrequency').change(function () {
     					if($('#txFrequency').val() == "4"){
 						$('#txOccurence').val('4');
@@ -145,10 +123,6 @@
  				db = openDatabase(shortName, version, displayName,maxSize);
  	 			db.transaction(function(tx){
 
- 				// Kung ganahan ta ug create-drop na db
-  				//tx.executeSql( 'DROP TABLE BudgetDB',nullHandler,nullHandler);
-
-
  				tx.executeSql( 'CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date Date NOT NULL)', [],nullHandler,errorHandler);},errorHandler,nullHandler);
 				
 				db.transaction(function(tx){
@@ -163,23 +137,18 @@
   					alert('Databases are not supported in this browser.');
   				return;
  				}
- 
  				html = '';
  				$('#Budgets').html('');
- 
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT * FROM BudgetDB;', [],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						<!-- html = html + '<ul data-role="listview">'; -->
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          					
     					        html += '<li>';
     					        html += '<a href="#editBudget" onClick=GetName(' + row.BudgetId +') class="ui-btn ui-corner-all ui-shadow ui-btn-icon-right ui-icon-carat-r">'+row.Name+ ' , ' + row.Target + '</a>';
     					        html += '</li>';
         						}
-        					<!-- html += '</ul>'; -->
         					$('#Budgets').append(html);
       						}
      					},errorHandler);
@@ -191,14 +160,11 @@
 			function viewSummary() {
  				html = '';
  				$('#viewSummaryPage').html('');
- 				
  				var currentBudgetId = $('#currentBudgetID').val();
- 				
 				db.transaction(function(transaction) {
    					transaction.executeSql('SELECT * FROM Expense where Budget= ?;', [currentBudgetId],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
-      						//<!-- html = html + '<center><h2>Summary</h2><center>'; -->
       						html = html + '<table style="width:100%" data-role="table" id="table-custom-2" data-mode="columntoggle" class="ui-body-d ui-shadow table-stripe ui-responsive" data-column-btn-theme="b" data-column-btn-text="Columns to display..." data-column-popup-theme="a">';
       						html += '<thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th></th></tr></thead>';
 							html += '<tbody>';
@@ -240,9 +206,6 @@
  					return;
 			}
 
-
-
-
 			function clearAddBudgetField() {
 				$('#txTarget').val('');
 				$('#txName').val('');
@@ -250,7 +213,6 @@
 
 				return;
 			}
-
 
 			function alertSuccess(successType) {
 				var message;
@@ -378,7 +340,6 @@
 					case 24:
 						message = "Please enter a valid Target Savings";
 						break;
-					
 				}
 			
 				$.noty.defaults = {
@@ -409,21 +370,17 @@
 					type: 'error', 
 					buttons:false
 				});
-
-				
 			}
 
 			function validateEditBudgetInputs() {
 				var newBudgetName = $.trim($('#bdgtnm').val());
 				if(newBudgetName == 0){
-					//alert("Please enter your new budget name");
 					executeAlert(19);
 					$("#bdgtnm").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					return;
 				}
 				else{
 					if($.isNumeric(newBudgetName)){
-						//alert("Please enter a valid Budget name");
 						executeAlert(20);
 						$("#bdgtnm").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						return;
@@ -433,20 +390,17 @@
 				var newTarget = $.trim($('#trgt').val());
 				if(newTarget == 0){
 					executeAlert(21);
-					//alert("Please enter your new Target savings");
 					$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					return;
 				}
 				else{
 					if($.isNumeric(newTarget)){
 						if(new Number(newTarget) < 0){
-							//alert("Please enter a positive Target savings");
 							executeAlert(22);
 							$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							return;
 						}
-						else if(new Number(newTarget) > new Number($('#MyMoneyHidden').val())){
-							//alert('The Target savings you entered is bigger than your money which is ₱'+ $('#MyMoneyHidden').val() +'');				
+						else if(new Number(newTarget) > new Number($('#MyMoneyHidden').val())){				
 							executeAlert(23);			
 							$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							return;
@@ -456,50 +410,41 @@
 						}
 					}
 					else{
-						//alert("Please enter a valid Target Savings");
 						executeAlert(24);
 						$("#trgt").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						return;
 					}
 				}
-
 			}
 
-
-			
-			
-			<!---------------------------------->
 			function connectToFacebook(){
 				$('#txFbUsername').val('');
 				$('#txFbPassword').val('');
 				
 				return;
 			}
-			<!---------------------------------->
 
 			function clearAddExpenseField() {
 				$('#txDescription').val('');
 				$('#txAmount').val('');
+				
 				return;
 			}
 
 			function clearEditBudgetField(){
 				db.transaction(function(transaction) {
-   					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB;', [],
+   					transaction.executeSql('SELECT Name, Target FROM BudgetDB;', [ ],
      					function(transaction, result) {
       					if (result != null && result.rows != null) {
         					for (var i = 0; i < result.rows.length; i++) {
           						var row = result.rows.item(i);
-          						$('#bdgtnm').append(row.Name);
 								$('#bdgtnm').val(row.Name);
-								$('#trgt').append(row.Target);
 								$('#trgt').val(row.Target);
         					}
       					}
      				},errorHandler);
  				},errorHandler,nullHandler);
-				
-				return;
+				return false;
 			}
 
 			function AddValueToDB() {
@@ -512,13 +457,10 @@
 				transaction.executeSql(
 					'INSERT INTO BudgetDB(Name, Money, Target, Date) VALUES (?,?,?,?)',[ $('#txName').val(), $('#txMoney').val(), $('#txTarget').val(), $('#txDateCreated').val()], nullHandler, errorHandler);
 				});
-					//alert("Added successfully!");
-					//window.history.back();
 				$.mobile.changePage("index.html#mainpage");
 				ListDBValues();
 				alertSuccess(1);
 				GetName(id);
-				//$.mobile.changePage("index.html#mainpage");
 				
 				return false;
 			}
@@ -532,7 +474,7 @@
 				GetName($('#currentBudgetID').val());
 				$.mobile.changePage("index.html#editBudget");
 				alertSuccess(2);
-				//window.alert("Expense added successfully!");
+				
 				return;
 			}
 
@@ -571,15 +513,13 @@
     							},
 							{addClass: 'btn btn-danger', text: 'Cancel', onClick: function($noty) {
 								$noty.close();
-								
 								}
 							}
-						]
-					});
+					]
+				});
 			}
 			
 			function confirmedDeleteExpense(id) {
-				
 					db.transaction(function(transaction) {
 						transaction.executeSql('DELETE FROM Expense WHERE ExpenseId = ?;', [id], nullHandler, errorHandler);
 					});
@@ -587,7 +527,7 @@
 					GetName($('#currentBudgetID').val());
 					viewSummary();
 				
-				return;	
+					return;	
 			}
 			
 
@@ -685,7 +625,6 @@
 				}
 				else{
 					if($.isNumeric(value)){
-						//window.alert("Please type in a valid Name of your budget");
 						executeAlert(2);
 						$("#txName").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
@@ -695,7 +634,6 @@
 				
 				value = $("#txMoney").val();
 				if($.trim(value) == 0){
-					//window.alert("Please type in your income.");
 					executeAlert(3);
 					$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addBudget");
@@ -705,7 +643,6 @@
 					if($.isNumeric(value)){
 						if((new Number(value)) < 0){
 							executeAlert(4);
-							//window.alert("Please type in a positive income.");
 							$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addBudget");
 							return;
@@ -713,7 +650,6 @@
 					}
 					else{
 						executeAlert(5);
-						//window.alert("Please type in a Valid number.");
 						$("#txMoney").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
 						return;
@@ -722,7 +658,6 @@
 				
 				var target = $("#txTarget").val();
 				if($.trim(target) == 0){
-					//window.alert("Please type in your Target saving.");
 					executeAlert(6);
 					$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addBudget");
@@ -732,14 +667,12 @@
 					if($.isNumeric(target)){
 						if((new Number(target)) < 0){
 							executeAlert(7);
-							//window.alert("Please type in a positive Target saving.");
 							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addBudget");
 							return;
 						}
 						else if((new Number(target)) == value){
 							executeAlert(8);
-							//window.alert("The Target saving is the same with your income.");
 							$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addBudget");
 							return;
@@ -751,7 +684,6 @@
 					}
 					else{
 						executeAlert(9);
-						//window.alert("Please type in a Valid number.");
 						$("#txTarget").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addBudget");
 						return;
@@ -761,7 +693,6 @@
 			
 			function checkAddExpenseInputs() {
 				if($.trim($('#txDescription').val()) == 0){
-					//window.alert("Please type in the Description of your expense");
 					executeAlert(10);
 					$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addExpensePage");
@@ -769,7 +700,6 @@
 				}
 				else{
 					if($.isNumeric($.trim($('#txDescription').val()))){
-						//window.alert("Please type in a valid Description of your expense");
 						executeAlert(11);
 						$("#txDescription").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addExpensePage");
@@ -780,7 +710,6 @@
 				var amount = $('#txAmount').val();
 				if($.trim(amount) == 0){
 					executeAlert(12);
-					//window.alert("Please type in the Amount of your expense");
 					$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addExpensePage");
 					return;
@@ -789,14 +718,12 @@
 					if($.isNumeric($.trim(amount))){
 						if(new Number($.trim(amount)) < 0){
 							executeAlert(13);
-							//window.alert("The amount you typed in is negative.");
 							$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addExpensePage");
 							return;
 						}
 						else{
 							if((new Number($('#total').val())) > (new Number($('#hiddenRecommendedExpenseMonthly').val()))){
-								//window.alert("The amount you are trying to spend is bigger than the remaining budget and will obstruct you from getting the target savings.");
 								executeAlert(14);
 								$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 								$.mobile.changePage("index.html#addExpensePage");
@@ -806,7 +733,6 @@
 					}
 					else{
 						executeAlert(15);
-						//window.alert("Please type a valid Amount of your expense");
 						$("#txAmount").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addExpensePage");
 						return;
@@ -816,7 +742,6 @@
 				var occurence = $('#txOccurence').val();
 				if($.trim(occurence) == 0){
 					executeAlert(16);
-					//window.alert("Please type in the number of occurence of your expense.");
 					$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 					$.mobile.changePage("index.html#addExpensePage");
 					return;
@@ -825,7 +750,6 @@
 					if($.isNumeric($.trim(occurence))){
 						if(new Number($.trim(occurence)) < 0){
 							executeAlert(17);
-							//window.alert("The occurence of expense you typed in is negative.");
 							$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 							$.mobile.changePage("index.html#addExpensePage");
 							return;
@@ -837,12 +761,10 @@
 					}
 					else{
 						executeAlert(18);
-						//window.alert("Please type in a valid number of occurence of your expense.");
 						$("#txOccurence").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
 						$.mobile.changePage("index.html#addExpensePage");
 						return;
 					}
-										
 				}
 			}
 
@@ -897,8 +819,8 @@
 					});
 				ListDBValues();
 				GetName(id);
-				<!-- window.location.assign("index.html#editBudget"); -->
 				$.mobile.changePage("index.html#editBudget");
+				
 				return false;
 			}
 	
@@ -919,8 +841,8 @@
 					ListDBValues();
 					GetName(id);
 					alertSuccess(4);
-					<!-- window.location.assign("index.html#mainpage"); -->
 					$.mobile.changePage("index.html#mainpage");
+					
 					return false;
 			}
 
@@ -928,8 +850,6 @@
 
 			function updateBudget(){
 				var id = $('#Myid').val();
-				//var bdgtnm = document.getElementById("bdgtnm");
-				//var trgt = document.getElementById("trgt");
 				db.transaction(
 				    function (transaction) {			
 				    	transaction.executeSql('UPDATE BudgetDB SET Name=?, Target=? WHERE BudgetId = ?;', [$('#bdgtnm').val(), $('#trgt').val(), id]);
@@ -937,9 +857,9 @@
 				);
 				ListDBValues();
 				GetName(id);
-				//alert("Budget updated successfully!");
 				alertSuccess(5);
 				$.mobile.changePage("index.html#editBudget");
+				
 				return;
 			}
 			
@@ -1024,8 +944,8 @@
 							}
 						},errorHandler);
 				},errorHandler,nullHandler);
-				
 				$.mobile.changePage("index.html#mainpage");
+				
 				return;
 			}
 
@@ -1037,24 +957,15 @@
 
     <body onload="onBodyLoad()">
     
-   		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
-																													   background-attachment: fixed; 
-																													   background-repeat: repeat; 
-																													   background-size: 100% 100%;">
+   		<div data-role="page" id="mainpage" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); background-attachment: fixed; background-repeat: repeat; background-size: 400% 400%;">
 			<div data-role="header" data-theme="b" data-poistion="fixed">
     			<h1>Home</h1>
   			</div>
-  			  			<!---MORE FOR HERE--->
-  			<!--<div style="background-color:black" data-role="collapsible" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
-			-->
 			<div style="color:white" align="center">
 				<h3>Budget Planner</h3>
 				<img src = 'img/Piggy1.PNG' align = "middle" width = "320">
 			</div>
-  			
-  			<!--------------------------------->
 			<div data-role="content">
-  			
   				<a href="#addBudget" data-role="button" class="ui-btn ui-shadow ui-corner-all ui-btn-b" onClick="clearAddBudgetField()">Add Budget</a>
   				<div data-role="collapsible" data-collapsed="true" data-theme="b" data-content-theme="b" data-collapsed-icon="carat-d" data-expanded-icon="carat-u">
 					<h2>View Budget List</h2>
@@ -1063,25 +974,17 @@
 							<div id="Budgets"></div>
 						</ul>
 				</div>
-  			</div>
-  			
-  			<!------------------CAROUSEL FOR ADDSPACE----------------------------->
-            <!--<div data-theme="b" data-position="fixed" data-fullscreen="true">-->
-            <div>
+				<div>
                 <div class="slider">
                     <ul class="bxslider">
                         <li><img src="img/Carousel1.png" /></li>
                         <li><img src="img/Carousel2.png" /></li>
                     </ul></div>
-            </div>
-  			<!-------------------------ADDSPACE END HERE-------------------------->
-  			
+				</div>
+  			</div>
 		</div>
 
-		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
-																													    background-attachment: fixed; 
-																													    background-repeat: repeat; 
-																													    background-size: 100% 100%;">
+		<div data-role="page" id="addBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); background-attachment: fixed; background-repeat: repeat; background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Budget</h1>
@@ -1111,10 +1014,7 @@
 			<div id="viewSummaryPage" style="color:white"></div>
 		</div>
 		
-		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); 
-																							background-attachment: fixed; 
-																							background-repeat: repeat; 
-																							background-size: 100% 100%;">
+		<div data-role="page" id="addExpensePage" style="background-image: url('img/bg.jpg'); background-attachment: fixed; background-repeat: repeat; background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#editBudget" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Add Expense</h1>
@@ -1159,22 +1059,30 @@
 			</div>
 		</div>
 		
-		<div data-role="page" id="editBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); 
-																														background-attachment: fixed; 
-																														background-repeat: repeat; 
-																														background-size: 100% 100%;">
+		<div data-role="page" id="editBudget" onload="onBodyLoad()" style="background-image: url('img/bg.jpg'); background-attachment: fixed; background-repeat: repeat; background-size: 100% 100%;">
 			<div data-role="header" data-theme="b">
 				<a href="#mainpage" class="ui-btn-left ui-btn ui-mini ui-corner-all ui-btn-icon-notext ui-icon-back"></a>
 				<h1>Edit Budget</h1>
 			</div>
 			<div data-role="content" style="color:white">
-				<center>
+				<center style="width:280px">
 					<a id="facebook_login" onClick="fb_publish();" data-inline="true" class="ui-btn ui-shadow ui-btn-inline ui-corner-all ui-btn-b ui-mini"><img src="img/fb.png" alt="facebook icon"> Share on Facebook</a><br>
 					<div id="fb-root"></div>
 					<div id="log"></div>
-					<b>Budget Name: <small id="MyName"></small></b><br>
-					<b>Budget Money: ₱<small id="MyMoney"></small></b><br>
-					<b>Target: ₱<small id="MyTarget"></small></b>
+					<table style="width:230px">
+						<tr>
+						  <td align="left"><b>Budget Name:</b></td>
+						  <td align="left"><b id="MyName"></b></td>
+						  </tr>
+						<tr>
+						  <td align="left"><b>Budget Money:</b></td>
+						  <td align="left"><b>₱</b><b id="MyMoney"></b></td>
+						</tr>
+						<tr>
+						  <td align="left"><b>Target Savings:</b></td>
+						  <td align="left"><b>₱</b><b id="MyTarget"></b></td>
+						</tr>
+					</table>
 					<br>
 					<h3>Estimated Daily Budget: </h3><div id="dailyBudget"></div>
 					<h3>Remaining Monthly Budget: </h3><div id="monthlyBudget"></div>
