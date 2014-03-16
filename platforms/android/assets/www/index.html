@@ -48,60 +48,7 @@
 
 		<script type="text/javascript" charset="utf-8">	
 
-			$(document).ready(function () {
-			
-				$('.bxslider').bxSlider({
-				});		
-				
-				$('#txMoney').keyup(function () {
-					$('#txTarget').val($('#txMoney').val()/2);
-					$('#txTarget').attr('max',$('#txMoney').val());
-				});
-				
-				$('#txAmount').keyup(function() {
-					$('#total').val($('#txAmount').val() * $('#txOccurence').val());			
-				});
-
-				$('#txOccurence').hide();
-				
-				$('#txFrequency').change(function () {
-    					if($('#txFrequency').val() == "4"){
-						$('#txOccurence').val('4');
-						$('#total').val($('#txAmount').val() * $('#txOccurence').val());
-						$('#txOccurence').hide();			
-					}
-					else if($('#txFrequency').val() == "1"){
-						$('#txOccurence').val('1');
-						$('#total').val($('#txAmount').val() * $('#txOccurence').val());
-						$('#txOccurence').hide();				
-					}
-					else{
-						$('#txOccurence').val('');
-						$('#txOccurence').show();
-						$('#total').val($('#txAmount').val() * $('#txOccurence').val());				
-					}
-  				}).change();
-
-				$('#txOccurence').keyup(function() {
-					$('#total').val($('#txAmount').val() * $('#txOccurence').val());			
-				});
-				
-				$("#addExpensePage").on("tap",function(){
-  					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
-				});
-
-				$("#addExpensePage").mousemove(function( event ) {
-  					$('#total').val($('#txAmount').val() * $('#txOccurence').val());
-				});
-				
-				
-			});
-
-			var db;
-			var shortName = 'BudgetDB';
-			var version = '1.0';
-			var displayName = 'BudgetDB';
-			var maxSize = 200;
+			$(document).ready(function(){$(".bxslider").bxSlider({});$("#txMoney").keyup(function(){$("#txTarget").val($("#txMoney").val()/2);$("#txTarget").attr("max",$("#txMoney").val())});$("#txAmount").keyup(function(){$("#total").val($("#txAmount").val()*$("#txOccurence").val())});$("#txOccurence").hide();$("#txFrequency").change(function(){if($("#txFrequency").val()=="4"){$("#txOccurence").val("4");$("#total").val($("#txAmount").val()*$("#txOccurence").val());$("#txOccurence").hide()}else if($("#txFrequency").val()=="1"){$("#txOccurence").val("1");$("#total").val($("#txAmount").val()*$("#txOccurence").val());$("#txOccurence").hide()}else{$("#txOccurence").val("");$("#txOccurence").show();$("#total").val($("#txAmount").val()*$("#txOccurence").val())}}).change();$("#txOccurence").keyup(function(){$("#total").val($("#txAmount").val()*$("#txOccurence").val())});$("#addExpensePage").on("tap",function(){$("#total").val($("#txAmount").val()*$("#txOccurence").val())});$("#addExpensePage").mousemove(function(e){$("#total").val($("#txAmount").val()*$("#txOccurence").val())})});var db;var shortName="BudgetDB";var version="1.0";var displayName="BudgetDB";var maxSize=200
 
 			function errorHandler(e,t){alert("Error: "+t.message+" code: "+t.code)}function successCallBack(){alert("DEBUGGING: success")}function nullHandler(){}function onBodyLoad(){if(!window.openDatabase){alert("Databases are not supported in this browser.");return}db=openDatabase(shortName,version,displayName,maxSize);db.transaction(function(e){e.executeSql("CREATE TABLE IF NOT EXISTS BudgetDB(BudgetId INTEGER NOT NULL PRIMARY KEY, Name TEXT NOT NULL, Money INTEGER NOT NULL, Target INTEGER NOT NULL, Date Date NOT NULL)",[],nullHandler,errorHandler)},errorHandler,nullHandler);db.transaction(function(e){e.executeSql("CREATE TABLE IF NOT EXISTS Expense(ExpenseId INTEGER NOT NULL PRIMARY KEY, Description TEXT NOT NULL, Amount INTEGER NOT NULL, Category TEXT NOT NULL, Occurence INTEGER NOT NULL, Date Date NOT NULL, Budget INTEGER)",[],nullHandler,errorHandler)},errorHandler,nullHandler);ListDBValues()}
 
