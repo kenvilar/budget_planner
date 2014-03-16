@@ -484,8 +484,22 @@
 			}
 
 			function clearEditBudgetField(){
-				$('#bdgtnm').val('');
-				$('#trgt').val('');
+				db.transaction(function(transaction) {
+   					transaction.executeSql('SELECT Name,Money,Date,Target,BudgetId FROM BudgetDB;', [],
+     					function(transaction, result) {
+      					if (result != null && result.rows != null) {
+        					for (var i = 0; i < result.rows.length; i++) {
+          						var row = result.rows.item(i);
+          						$('#bdgtnm').append(row.Name);
+								$('#bdgtnm').val(row.Name);
+								$('#trgt').append(row.Target);
+								$('#trgt').val(row.Target);
+        					}
+      					}
+     				},errorHandler);
+ 				},errorHandler,nullHandler);
+				
+				return;
 			}
 
 			function AddValueToDB() {
@@ -623,11 +637,11 @@
           						var row = result.rows.item(i);
           						$('#MyName').append(row.Name);
           						$('#MyMoney').append(row.Money);
-							$('#MyMoney').append('<input type="hidden" id="MyMoneyHidden" value="'+ row.Money +'">');
-							budgetDate = new Date(row.Date);
-							lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
-							totalMoney = row.Money;
-							targetSavings = row.Target;
+								$('#MyMoney').append('<input type="hidden" id="MyMoneyHidden" value="'+ row.Money +'">');
+								budgetDate = new Date(row.Date);
+								lastDayOfBudgetMonth = new Date(budgetDate.getFullYear(), budgetDate.getMonth() + 1, 0)
+								totalMoney = row.Money;
+								targetSavings = row.Target;
           						$('#MyTarget').append(row.Target);
           						$('#Myid').append(row.BudgetId);
           						$('#Myid').val(row.BudgetId);
