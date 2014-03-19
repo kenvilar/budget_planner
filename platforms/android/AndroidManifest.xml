@@ -24,7 +24,8 @@
         <activity
             android:name="BudgetPlanner"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-            android:label="Budget Planner Homepage" >
+            android:label="Budget Planner Homepage" 
+			android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
